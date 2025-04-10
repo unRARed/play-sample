@@ -19,6 +19,7 @@ gem "importmap-rails" # For managing JavaScript modules
 
 # File management
 gem "image_processing", "~> 1.2" # For Active Storage variants
+gem "active_storage_validations" # For validating file attachments
 
 # Database tools
 gem "solid_cache"      # Database-backed cache

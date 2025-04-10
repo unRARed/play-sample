@@ -5,7 +5,10 @@ class Sample < ApplicationRecord
   validates :name, presence: true
   validates :label, presence: true
   validates :color, presence: true
-  validates :audio, presence: true, content_type: ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/x-wav', 'audio/mp3', 'audio/webm']
+  validates :audio, presence: true,
+                    content_type: { with: ['audio/mpeg', 'audio/mp4', 'audio/ogg', 'audio/aac', 'audio/x-m4a', 'audio/x-aiff', 'audio/x-flac', 'application/ogg'],
+                                   message: 'must be a valid audio format (MP3, M4A, OGG, AAC, FLAC)' },
+                    size: { less_than: 50.megabytes, message: 'should be less than 50MB' }
   
   # Play modes
   # 'exclusive' - stops all other sounds when played

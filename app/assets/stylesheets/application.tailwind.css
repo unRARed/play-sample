@@ -6,11 +6,14 @@
 @import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
 
 /* Custom styles */
-.sample-pad {
-  aspect-ratio: 1/1;
-  @apply flex items-center justify-center text-center p-2 rounded-md text-white font-bold shadow-md transition-all;
-}
+@layer components {
+  .sample-pad {
+    aspect-ratio: 1/1;
+    @apply flex items-center justify-center text-center rounded-md text-white font-bold shadow-md transition-all;
+    padding: 0.5rem; /* Instead of p-2 */
+  }
 
-.sample-pad:active {
-  @apply transform scale-95 opacity-80;
+  .sample-pad:active {
+    @apply transform scale-95 opacity-80;
+  }
 }
