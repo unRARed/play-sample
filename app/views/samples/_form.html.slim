@@ -1,12 +1,14 @@
-= form_with model: [sample_pad, sample], local: false, class: "mt-4", id: "sample-form", data: { turbo: true } do |f|
+= form_with model: [sample_pad, sample], local: false, class: "mt-4", id: "sample-form", data: { turbo: true, controller: "sample-form" } do |f|
   .mb-4
     = f.label :name, class: "block text-sm font-medium mb-1"
-    = f.text_field :name, class: "input input-bordered w-full", placeholder: "Sample name", required: true
+    = f.text_field :name, class: "input input-bordered w-full", placeholder: "Sample name", required: true, data: { sample_form_target: "name" }
+    .error-msg.text-error.text-xs.mt-1.hidden data-sample-form-target="nameError" Name is required
 
   .mb-4
     = f.label :label, class: "block text-sm font-medium mb-1"
-    = f.text_field :label, class: "input input-bordered w-full", placeholder: "Button label", required: true
+    = f.text_field :label, class: "input input-bordered w-full", placeholder: "Button label", required: true, data: { sample_form_target: "label" }
     p.text-xs.text-base-content.opacity-70.mt-1 This will appear on the button
+    .error-msg.text-error.text-xs.mt-1.hidden data-sample-form-target="labelError" Label is required
     
   .mb-4
     = f.label :color, class: "block text-sm font-medium mb-1"
@@ -30,10 +32,20 @@
   .mb-4
     = f.label :audio, class: "block text-sm font-medium mb-1"
     .form-control
-      = f.file_field :audio, direct_upload: true, accept: "audio/*", required: true, class: "file-input file-input-bordered w-full"
-      p.text-xs.text-base-content.opacity-70.mt-1 Accepts MP3, WAV, OGG, etc.
+      = f.file_field :audio, direct_upload: true, accept: "audio/*", required: true, class: "file-input file-input-bordered w-full", 
+                   data: { sample_form_target: "audioFile", action: "change->sample-form#validateAudioFile" }
+      p.text-xs.text-base-content.opacity-70.mt-1 Accepts MP3, WAV, OGG, etc. (max 50MB)
+      .error-msg.text-error.text-xs.mt-1.hidden data-sample-form-target="audioError" Please select a valid audio file
+      
+    .upload-progress.w-full.mt-2.hidden data-sample-form-target="uploadProgress"
+      .progress-label.flex.justify-between.text-xs.mb-1
+        span.file-name data-sample-form-target="fileName" Uploading...
+        span.percentage data-sample-form-target="percentage" 0%
+      .progress.h-2.bg-base-300.rounded-full.overflow-hidden
+        .progress-bar.h-full.bg-primary.transition-all.duration-200 data-sample-form-target="progressBar" style="width: 0%"
 
   = f.hidden_field :position, data: { position_input: true }
 
-  .flex.justify-end.mt-6
-    = f.submit class: "btn btn-primary"
+  .flex.justify-between.mt-6
+    button.btn.btn-ghost type="button" data-action="click->sample-player#closeUploadForm" Cancel
+    = f.submit "Add Sample", class: "btn btn-primary", data: { sample_form_target: "submitButton", action: "click->sample-form#validateForm" }

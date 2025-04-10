@@ -85,7 +85,29 @@ class SamplesController < ApplicationController
   private
   
   def set_sample_pad
-    @sample_pad = SamplePad.find(params[:sample_pad_id])
+    # Handle the case where sample_pad_id might be missing or invalid
+    if params[:sample_pad_id].present?
+      @sample_pad = SamplePad.find_by(id: params[:sample_pad_id])
+      
+      # If sample_pad_id was provided but not found, redirect with an error
+      unless @sample_pad
+        respond_to do |format|
+          format.html { redirect_to root_path, alert: 'Sample pad not found.' }
+          format.turbo_stream { flash.now[:alert] = 'Sample pad not found.' }
+          format.json { render json: { error: 'Sample pad not found' }, status: :not_found }
+        end
+      end
+    elsif params[:id].present? && action_name == 'stop_all'
+      # For the stop_all action, we might receive the sample_pad.id as :id parameter
+      @sample_pad = SamplePad.find_by(id: params[:id])
+    else
+      # Handle the case where no sample_pad_id is provided
+      respond_to do |format|
+        format.html { redirect_to root_path, alert: 'Sample pad ID is required.' }
+        format.turbo_stream { flash.now[:alert] = 'Sample pad ID is required.' }
+        format.json { render json: { error: 'Sample pad ID is required' }, status: :bad_request }
+      end
+    end
   end
   
   def set_sample
@@ -95,13 +117,13 @@ class SamplesController < ApplicationController
   def authorize_user!
     unless @sample_pad.user == current_user
       respond_to do |format|
-        format.html { redirect_to sample_pads_path, alert: "You are not authorized to modify samples in this pad." }
+        format.html { redirect_to root_path, alert: "You are not authorized to modify samples in this pad." }
         format.turbo_stream { flash.now[:alert] = "You are not authorized to modify samples in this pad." }
       end
     end
   end
   
   def sample_params
-    params.require(:sample).permit(:name, :label, :color, :play_mode, :audio)
+    params.require(:sample).permit(:name, :label, :color, :play_mode, :audio, :position)
   end
 end

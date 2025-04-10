@@ -4,7 +4,13 @@ class SamplePadsController < ApplicationController
   before_action :authorize_user!, only: [:show, :edit, :update, :destroy]
 
   def index
-    @sample_pads = current_user.sample_pads
+    # Redirect to the user's single sample pad if it exists
+    if current_user.sample_pad
+      redirect_to sample_pad_path(current_user.sample_pad)
+    else
+      # Fallback in case user doesn't have a sample pad yet
+      redirect_to new_sample_pad_path
+    end
   end
 
   def show
@@ -12,11 +18,26 @@ class SamplePadsController < ApplicationController
   end
 
   def new
-    @sample_pad = current_user.sample_pads.new
+    # Redirect if user already has a sample pad
+    if current_user.sample_pad
+      redirect_to sample_pad_path(current_user.sample_pad), notice: "You already have a sample pad."
+    else
+      @sample_pad = SamplePad.new(user: current_user)
+    end
   end
 
   def create
-    @sample_pad = current_user.sample_pads.new(sample_pad_params)
+    # Don't allow creating if user already has a sample pad
+    if current_user.sample_pad
+      respond_to do |format|
+        format.html { redirect_to sample_pad_path(current_user.sample_pad), alert: "You already have a sample pad." }
+        format.turbo_stream { flash.now[:alert] = "You already have a sample pad." }
+      end
+      return
+    end
+
+    @sample_pad = SamplePad.new(sample_pad_params)
+    @sample_pad.user = current_user
 
     respond_to do |format|
       if @sample_pad.save
@@ -48,7 +69,7 @@ class SamplePadsController < ApplicationController
     @sample_pad.destroy
 
     respond_to do |format|
-      format.html { redirect_to sample_pads_path, notice: "Sample pad was successfully deleted." }
+      format.html { redirect_to new_sample_pad_path, notice: "Sample pad was successfully deleted." }
       format.turbo_stream { flash.now[:notice] = "Sample pad was successfully deleted." }
     end
   end
@@ -61,7 +82,7 @@ class SamplePadsController < ApplicationController
 
   def authorize_user!
     unless @sample_pad.user == current_user
-      redirect_to sample_pads_path, alert: "You are not authorized to view this sample pad."
+      redirect_to root_path, alert: "You are not authorized to view this sample pad."
     end
   end
 

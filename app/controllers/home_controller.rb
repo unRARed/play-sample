@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
   def index
     if user_signed_in?
-      @sample_pads = current_user.sample_pads.limit(3)
+      @sample_pad = current_user.sample_pad
     end
   end
 end

@@ -4,7 +4,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
          
-  has_many :sample_pads, dependent: :destroy
+  has_one :sample_pad, dependent: :destroy
   
   def username
     email.split('@').first
@@ -16,6 +16,6 @@ class User < ApplicationRecord
   private
   
   def create_default_sample_pad
-    sample_pads.create(name: 'My First Pad')
+    create_sample_pad(name: 'My Sample Pad')
   end
 end
