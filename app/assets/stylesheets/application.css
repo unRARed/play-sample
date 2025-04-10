@@ -8,3 +8,65 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+/* DaisyUI Sunset Theme Colors */
+:root {
+  --primary: #e779c1;
+  --primary-focus: #d946ef;
+  --primary-content: #ffffff;
+  --secondary: #58c7f3;
+  --secondary-focus: #2563eb;
+  --secondary-content: #ffffff;
+  --accent: #f3cc30;
+  --accent-focus: #f59e0b;
+  --accent-content: #ffffff;
+  --base-100: #1d1e25;
+  --base-200: #2a2b36;
+  --base-300: #3b3c4a;
+  --base-content: #ffffff;
+  --neutral: #1f2937;
+  --neutral-focus: #4b5563;
+  --neutral-content: #ffffff;
+  --info: #3abff8;
+  --success: #36d399;
+  --warning: #fbbd23;
+  --error: #f87272;
+}
+
+/* Custom component styles */
+.sample-pad {
+  aspect-ratio: 1/1;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sample-pad:hover {
+  transform: scale(1.05);
+}
+
+.now-playing-container {
+  padding: 0.75rem;
+  background-color: var(--base-300);
+  border-radius: 0.5rem;
+}
+
+.progress-container {
+  width: 100%;
+  background-color: var(--base-100);
+  border-radius: 9999px;
+  height: 0.625rem;
+}
+
+.progress-bar {
+  background-color: var(--primary);
+  height: 0.625rem;
+  border-radius: 9999px;
+  transition: width 0.1s;
+}

@@ -1,0 +1,16 @@
+.flex.items-center.justify-center.min-h-screen.py-12.bg-base-100
+  .max-w-md.w-full.bg-base-200.rounded-lg.shadow-lg.p-8
+    h2.text-3xl.font-bold.mb-6.text-center Resend confirmation instructions
+    
+    = form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f|
+      = render "devise/shared/error_messages", resource: resource
+      
+      .mb-6
+        = f.label :email, class: "block text-base-content mb-2"
+        = f.email_field :email, autofocus: true, autocomplete: "email", value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email), placeholder: "Email", class: "w-full p-3 rounded bg-base-300 border-base-300 focus:outline-none focus:ring-2 focus:ring-primary text-base-content"
+      
+      .mt-8
+        = f.submit "Resend confirmation instructions", class: "w-full p-3 bg-primary text-primary-content rounded font-semibold cursor-pointer hover:bg-primary-focus transition-colors duration-200"
+    
+    .mt-6.text-center.text-sm.text-base-content.opacity-80
+      = render "devise/shared/links"

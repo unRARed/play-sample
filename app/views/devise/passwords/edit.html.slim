@@ -1,0 +1,24 @@
+.flex.items-center.justify-center.min-h-screen.py-12.bg-base-100
+  .max-w-md.w-full.bg-base-200.rounded-lg.shadow-lg.p-8
+    h2.text-3xl.font-bold.mb-6.text-center Change your password
+    
+    = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f|
+      = render "devise/shared/error_messages", resource: resource
+      = f.hidden_field :reset_password_token
+      
+      .mb-6
+        = f.label :password, "New password", class: "block text-base-content mb-2"
+        - if @minimum_password_length
+          span.text-xs.text-base-content.opacity-80.ml-1
+            | (#{@minimum_password_length} characters minimum)
+        = f.password_field :password, autofocus: true, autocomplete: "new-password", placeholder: "New password", class: "w-full p-3 rounded bg-base-300 border-base-300 focus:outline-none focus:ring-2 focus:ring-primary text-base-content"
+      
+      .mb-6
+        = f.label :password_confirmation, "Confirm new password", class: "block text-base-content mb-2"
+        = f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "Confirm new password", class: "w-full p-3 rounded bg-base-300 border-base-300 focus:outline-none focus:ring-2 focus:ring-primary text-base-content"
+      
+      .mt-8
+        = f.submit "Change my password", class: "w-full p-3 bg-primary text-primary-content rounded font-semibold cursor-pointer hover:bg-primary-focus transition-colors duration-200"
+    
+    .mt-6.text-center.text-sm.text-base-content.opacity-80
+      = render "devise/shared/links"

@@ -1,0 +1,37 @@
+.min-h-screen.flex.items-center.justify-center.py-12.bg-neutral
+  .max-w-md.w-full
+    .flex.flex-col.items-center.mb-8
+      .avatar.placeholder.mb-3
+        .bg-primary.text-primary-content.rounded-full.w-24
+          span.text-3xl SP
+      h1.text-4xl.font-bold.text-neutral-content Sample Player
+      p.text-neutral-content.opacity-80.mt-1 Create your account to get started
+
+    .card.bg-base-300.shadow-lg
+      .card-body.px-8.py-6
+        h2.card-title.justify-center.mb-5.text-2xl Sign Up
+
+        = form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
+          = render "devise/shared/error_messages", resource: resource
+          
+          .form-control.mb-4
+            = f.label :email, class: "label label-text font-medium"
+            = f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "your-email@example.com", class: "input input-bordered input-primary w-full"
+          
+          .form-control.mb-4
+            .label
+              = f.label :password, class: "label-text font-medium"
+              - if @minimum_password_length
+                span.label-text-alt.opacity-75 #{@minimum_password_length} characters minimum
+            = f.password_field :password, autocomplete: "new-password", placeholder: "••••••••", class: "input input-bordered input-primary w-full"
+          
+          .form-control.mb-6
+            = f.label :password_confirmation, class: "label label-text font-medium"
+            = f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "••••••••", class: "input input-bordered input-primary w-full"
+          
+          .form-control.mt-6
+            = f.submit "Create Account", class: "btn btn-primary w-full font-bold"
+
+          .divider.text-xs.opacity-75.my-4 OR
+
+          = link_to "Log in with existing account", new_session_path(resource_name), class: "btn btn-outline btn-secondary w-full"

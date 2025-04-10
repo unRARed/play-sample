@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* DaisyUI theme settings are in tailwind.config.js */
+/* Font Awesome integration */
+@import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
 
 /* Custom styles */
 .sample-pad {

@@ -1,0 +1,167 @@
+/* Color classes for sample pads */
+.bg-red-500 {
+  background-color: #f87272;
+}
+.bg-red-600:hover {
+  background-color: #dc2626;
+}
+
+.bg-blue-500 {
+  background-color: #58c7f3;
+}
+.bg-blue-600:hover {
+  background-color: #2563eb;
+}
+
+.bg-green-500 {
+  background-color: #36d399;
+}
+.bg-green-600:hover {
+  background-color: #059669;
+}
+
+.bg-yellow-500 {
+  background-color: #fbbd23;
+}
+.bg-yellow-600:hover {
+  background-color: #d97706;
+}
+
+.bg-purple-500 {
+  background-color: #e779c1;
+}
+.bg-purple-600:hover {
+  background-color: #d946ef;
+}
+
+.bg-orange-500 {
+  background-color: #f59e0b;
+}
+.bg-orange-600:hover {
+  background-color: #d97706;
+}
+
+.bg-pink-500 {
+  background-color: #ec4899;
+}
+.bg-pink-600:hover {
+  background-color: #db2777;
+}
+
+.bg-teal-500 {
+  background-color: #14b8a6;
+}
+.bg-teal-600:hover {
+  background-color: #0d9488;
+}
+
+.bg-indigo-500 {
+  background-color: #6366f1;
+}
+.bg-indigo-600:hover {
+  background-color: #4f46e5;
+}
+
+.bg-lime-500 {
+  background-color: #84cc16;
+}
+.bg-lime-600:hover {
+  background-color: #65a30d;
+}
+
+.bg-amber-500 {
+  background-color: #f59e0b;
+}
+.bg-amber-600:hover {
+  background-color: #d97706;
+}
+
+.bg-cyan-500 {
+  background-color: #06b6d4;
+}
+.bg-cyan-600:hover {
+  background-color: #0891b2;
+}
+
+.bg-rose-500 {
+  background-color: #f43f5e;
+}
+.bg-rose-600:hover {
+  background-color: #e11d48;
+}
+
+.bg-emerald-500 {
+  background-color: #10b981;
+}
+.bg-emerald-600:hover {
+  background-color: #059669;
+}
+
+.bg-violet-500 {
+  background-color: #8b5cf6;
+}
+.bg-violet-600:hover {
+  background-color: #7c3aed;
+}
+
+.bg-fuchsia-500 {
+  background-color: #d946ef;
+}
+.bg-fuchsia-600:hover {
+  background-color: #c026d3;
+}
+
+/* Additional DaisyUI theme integration */
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--primary-content);
+}
+.btn-primary:hover {
+  background-color: var(--primary-focus);
+}
+
+.btn-secondary {
+  background-color: var(--secondary);
+  color: var(--secondary-content);
+}
+.btn-secondary:hover {
+  background-color: var(--secondary-focus);
+}
+
+.btn-accent {
+  background-color: var(--accent);
+  color: var(--accent-content);
+}
+.btn-accent:hover {
+  background-color: var(--accent-focus);
+}
+
+.btn-error {
+  background-color: var(--error);
+  color: white;
+}
+
+.badge-primary {
+  background-color: var(--primary);
+  color: var(--primary-content);
+}
+
+.badge-secondary {
+  background-color: var(--secondary);
+  color: var(--secondary-content);
+}
+
+.badge-success {
+  background-color: var(--success);
+  color: white;
+}
+
+.badge-warning {
+  background-color: var(--warning);
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.badge-error {
+  background-color: var(--error);
+  color: white;
+}

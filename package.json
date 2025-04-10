@@ -1,0 +1,14 @@
+{
+  "name": "sample_player",
+  "private": true,
+  "dependencies": {
+    "autoprefixer": "^10.4.17",
+    "daisyui": "^4.12.24",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1"
+  },
+  "scripts": {
+    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify",
+    "build": "yarn build:css"
+  }
+}
