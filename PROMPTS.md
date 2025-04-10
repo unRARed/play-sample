@@ -315,6 +315,23 @@ Fixed the issue with the "Add Sample" squares not opening the file browser prope
    - Implemented better error states and loading indicators during the file selection process
    - Made the file selection step more intuitive for users
 
+## README Update (2025-04-10 00:57:04)
+
+```
+replace the README.md with an explanation that this is a Windsurf "Vibe Coding" Experiment
+```
+
+Updated the project's README.md file:
+
+1. Replaced the default Rails README with a comprehensive explanation of the Sample Player project
+2. Added description of "Vibe Coding" as a collaborative approach between human and AI
+3. Included sections for:
+   - Project features and capabilities
+   - Technical stack details
+   - Development history reference to PROMPTS.md
+   - Basic license information
+4. Positioned the project as an experimental showcase of AI-assisted coding
+
 ---
 
 *This document will be updated with each new prompt to maintain a clear history of the project's evolution.*
