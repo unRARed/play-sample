@@ -1,0 +1,53 @@
+.hero.bg-base-300.rounded-lg.p-8.mb-8
+  .hero-content.flex-col.lg:flex-row
+    .max-w-md.prose
+      h1.text-5xl.font-bold Sample Player
+      p.py-6 Create, organize, and play audio samples with customizable pads. Upload your audio files and trigger them with a simple click, just like the Akai MPX8.
+      - if user_signed_in?
+        = link_to "View My Sample Pads", sample_pads_path, class: "btn btn-primary"
+      - else
+        = link_to "Get Started", new_user_registration_path, class: "btn btn-primary"
+    img.max-w-sm.rounded-lg.shadow-2xl alt="Sample Player" src="/assets/sample-player.png" /
+
+- if user_signed_in?
+  .my-8
+    h2.text-2xl.font-bold.mb-4 Your Recent Sample Pads
+    - if @sample_pads.present?
+      .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-6
+        - @sample_pads.each do |pad|
+          = link_to sample_pad_path(pad), class: "card bg-base-200 hover:bg-base-300 transition-colors duration-200 shadow-xl" do
+            .card-body
+              h3.card-title = pad.name
+              p #{pad.samples.count} samples
+              .card-actions.justify-end
+                span.text-sm.opacity-75 Last updated: #{time_ago_in_words(pad.updated_at)} ago
+      .mt-4
+        = link_to "View All Sample Pads", sample_pads_path, class: "btn btn-outline"
+    - else
+      .card.bg-base-200.shadow-xl
+        .card-body
+          h3.card-title You don't have any sample pads yet!
+          p.mb-4 Create your first sample pad to start organizing and playing your audio samples.
+          = link_to "Create Sample Pad", new_sample_pad_path, class: "btn btn-primary"
+
+.grid.grid-cols-1.md:grid-cols-3.gap-6.my-8
+  .card.bg-base-200.shadow-xl
+    .card-body
+      h3.card-title.mb-2
+        i.fas.fa-upload.mr-2
+        | Upload Audio
+      p Upload your favorite audio samples in various formats including MP3, WAV, and OGG.
+  
+  .card.bg-base-200.shadow-xl
+    .card-body
+      h3.card-title.mb-2
+        i.fas.fa-palette.mr-2
+        | Customize Pads
+      p Customize your sample pad buttons with labels and choose from 16 different colors.
+  
+  .card.bg-base-200.shadow-xl
+    .card-body
+      h3.card-title.mb-2
+        i.fas.fa-play.mr-2
+        | Instant Playback
+      p Play samples with a single click and control which sounds play simultaneously.

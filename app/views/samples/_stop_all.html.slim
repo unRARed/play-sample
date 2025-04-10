@@ -1,0 +1,13 @@
+// This template triggers all samples to stop playing
+script
+  | document.querySelectorAll('audio').forEach(audio => {
+  |   audio.pause();
+  |   audio.currentTime = 0;
+  | });
+  | 
+  | // Reset all progress bars
+  | document.querySelectorAll('.progress-bar').forEach(bar => {
+  |   bar.style.width = '0%';
+  | });
+  | 
+  | console.log('All samples stopped');

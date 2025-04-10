@@ -1,0 +1,54 @@
+div data-controller="sample-player" data-turbo-stream-subscription="playback"
+  .flex.items-center.justify-between.mb-6
+    .flex.items-center
+      h1.text-3xl.font-bold = @sample_pad.name
+      = link_to edit_sample_pad_path(@sample_pad), class: "ml-3 btn btn-ghost btn-sm" do
+        i.fas.fa-edit
+    
+    .flex.items-center.space-x-2
+      = link_to sample_pads_path, class: "btn btn-ghost btn-sm" do
+        i.fas.fa-arrow-left.mr-1
+        | Back
+        
+      = button_to stop_all_samples_path, class: "btn btn-error btn-sm", data: { action: "click->sample-player#stopAll" } do
+        i.fas.fa-stop.mr-1
+        | Stop All
+  
+  .card.bg-base-200.shadow-xl.mb-6 data-sample-player-target="statusPanel"
+    .card-body
+      h2.card-title Now Playing
+      
+      #now-playing.mt-2
+        = render "samples/not_playing"
+  
+  h2.text-2xl.font-bold.mb-4 Sample Grid
+  
+  .grid.grid-cols-4.gap-4.mb-8
+    - 16.times do |index|
+      - sample = @samples.find_by(position: index)
+      - if sample
+        = render "samples/pad", sample: sample, pad: @sample_pad
+      - else
+        .aspect-square.bg-base-300.rounded-lg.flex.items-center.justify-center.text-center.cursor-pointer.opacity-70 id="empty-pad-#{index}" data-position=index data-action="click->sample-player#showUploadForm"
+          .p-4
+            i.fas.fa-plus.mb-2.text-2xl
+            p.text-sm Add Sample
+  
+  // Sample upload form (initially hidden)
+  #sample-form.modal data-sample-player-target="uploadModal"
+    .modal-box
+      h3.font-bold.text-lg Add New Sample
+      = render "samples/form", sample: Sample.new(sample_pad: @sample_pad), sample_pad: @sample_pad
+      
+      .modal-action
+        button.btn data-action="click->sample-player#closeUploadForm" Cancel
+
+// Hidden div to manage playing samples
+#playing-samples data-sample-player-target="playingArea"
+
+// Templates for turbo streams
+= javascript_tag nonce: true do
+  | document.addEventListener('turbo:load', function() {
+  |   // Initialize the sample player functionality
+  |   initializeSamplePlayer();
+  | });

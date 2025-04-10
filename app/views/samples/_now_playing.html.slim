@@ -1,0 +1,17 @@
+.p-3.bg-base-300.rounded-lg data-sample-id=sample.id
+  .flex.items-center.justify-between.mb-2
+    .flex.items-center
+      .w-8.h-8.rounded-md.flex.items-center.justify-center.text-white class="bg-#{sample.color}-500" 
+        i.fas.fa-music
+      .ml-3
+        .font-bold = sample.label
+        .text-sm.opacity-80 = sample.name
+    button.btn.btn-ghost.btn-sm.btn-circle data-action="click->sample-player#stopSample" data-sample-id=sample.id
+      i.fas.fa-stop
+  
+  .mb-1.flex.justify-between.text-xs
+    span Playing
+    span.sample-duration data-duration=sample.duration data-sample-id=sample.id 0:00 / #{format('%d:%02d', sample.duration / 60, sample.duration % 60)}
+  
+  .w-full.bg-base-100.rounded-full.h-2.5.dark:bg-gray-700
+    .bg-primary.h-2.5.rounded-full.progress-bar data-sample-id=sample.id style="width: 0%"

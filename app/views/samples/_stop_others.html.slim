@@ -1,0 +1,13 @@
+// This template triggers all other samples to stop playing
+script
+  | document.querySelectorAll('audio:not([data-sample-id="#{except_sample_id}"])').forEach(audio => {
+  |   audio.pause();
+  |   audio.currentTime = 0;
+  | });
+  | 
+  | // Reset progress bars for stopped samples
+  | document.querySelectorAll('.progress-bar:not([data-sample-id="#{except_sample_id}"])').forEach(bar => {
+  |   bar.style.width = '0%';
+  | });
+  | 
+  | console.log('Stopped all samples except ' + #{except_sample_id});

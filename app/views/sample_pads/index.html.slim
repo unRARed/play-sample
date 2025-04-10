@@ -1,0 +1,30 @@
+.flex.items-center.justify-between.mb-6
+  h1.text-3xl.font-bold My Sample Pads
+  = link_to new_sample_pad_path, class: "btn btn-primary" do
+    i.fas.fa-plus.mr-2
+    | New Sample Pad
+
+- if @sample_pads.present?
+  .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-6
+    - @sample_pads.each do |pad|
+      .card.bg-base-200.shadow-xl
+        .card-body
+          h2.card-title = pad.name
+          p.mb-2
+            span.badge.badge-primary.mr-2 = pluralize(pad.samples.count, 'sample')
+            - if pad.samples.count >= SamplePad::MAX_SAMPLES
+              span.badge.badge-warning Full
+            - else
+              span.badge.badge-success #{pad.available_slots} slots available
+          .card-actions.justify-end
+            = link_to "View", sample_pad_path(pad), class: "btn btn-primary btn-sm"
+            = link_to "Edit", edit_sample_pad_path(pad), class: "btn btn-ghost btn-sm"
+            = button_to "Delete", sample_pad_path(pad), method: :delete, class: "btn btn-error btn-sm", form: { data: { turbo_confirm: "Are you sure? This will delete all samples in this pad." } }
+- else
+  .card.bg-base-200.shadow-xl
+    .card-body.text-center
+      h2.card-title.justify-center No Sample Pads Yet
+      p.mb-4 Create your first sample pad to start organizing and playing your audio samples.
+      = link_to new_sample_pad_path, class: "btn btn-primary" do
+        i.fas.fa-plus.mr-2
+        | Create Sample Pad

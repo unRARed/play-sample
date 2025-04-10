@@ -1,0 +1,39 @@
+= form_with model: [sample_pad, sample], local: false, class: "mt-4", id: "sample-form", data: { turbo: true } do |f|
+  .mb-4
+    = f.label :name, class: "block text-sm font-medium mb-1"
+    = f.text_field :name, class: "input input-bordered w-full", placeholder: "Sample name", required: true
+
+  .mb-4
+    = f.label :label, class: "block text-sm font-medium mb-1"
+    = f.text_field :label, class: "input input-bordered w-full", placeholder: "Button label", required: true
+    p.text-xs.text-base-content.opacity-70.mt-1 This will appear on the button
+    
+  .mb-4
+    = f.label :color, class: "block text-sm font-medium mb-1"
+    .grid.grid-cols-4.gap-2
+      - Sample::COLORS.each do |color|
+        .color-option
+          = f.radio_button :color, color, class: "sr-only peer", required: true
+          label.block.w-full.aspect-square.rounded-md.cursor-pointer.peer-checked:ring-2.peer-checked:ring-offset-2.peer-checked:ring-primary for="sample_color_#{color}" class="bg-#{color}-500"
+            span.sr-only = color.capitalize
+
+  .mb-4
+    = f.label :play_mode, class: "block text-sm font-medium mb-1"
+    .flex.space-x-4
+      label.cursor-pointer.flex.items-center
+        = f.radio_button :play_mode, "exclusive", class: "radio radio-primary mr-2", required: true, checked: true
+        span Exclusive (stops other samples)
+      label.cursor-pointer.flex.items-center
+        = f.radio_button :play_mode, "simultaneous", class: "radio radio-primary mr-2"
+        span Simultaneous
+
+  .mb-4
+    = f.label :audio, class: "block text-sm font-medium mb-1"
+    .form-control
+      = f.file_field :audio, direct_upload: true, accept: "audio/*", required: true, class: "file-input file-input-bordered w-full"
+      p.text-xs.text-base-content.opacity-70.mt-1 Accepts MP3, WAV, OGG, etc.
+
+  = f.hidden_field :position, data: { position_input: true }
+
+  .flex.justify-end.mt-6
+    = f.submit class: "btn btn-primary"

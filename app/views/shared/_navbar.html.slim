@@ -1,0 +1,28 @@
+.navbar.bg-base-200
+  .navbar-start
+    = link_to root_path, class: "btn btn-ghost text-xl" do
+      i.fas.fa-music.mr-2
+      | Sample Player
+      
+  .navbar-center
+    - if user_signed_in? && controller_name != "home"
+      = link_to "My Pads", sample_pads_path, class: "btn btn-ghost"
+      - if controller_name == "sample_pads" && action_name == "show"
+        button#stop-all-btn.btn.btn-error onclick="stopAllSamples()" Stop All
+  
+  .navbar-end
+    - if user_signed_in?
+      .dropdown.dropdown-end
+        label.btn.btn-ghost.btn-circle.avatar tabindex="0"
+          .rounded-full.w-10.h-10.bg-primary.flex.items-center.justify-center.text-primary-content
+            = current_user.username[0].upcase
+        ul.menu.menu-sm.dropdown-content.mt-3.z-[1].p-2.shadow.bg-base-100.rounded-box.w-52 tabindex="0"
+          li
+            = link_to "Profile", edit_user_registration_path
+          li
+            = link_to "My Sample Pads", sample_pads_path
+          li
+            = button_to "Logout", destroy_user_session_path, method: :delete, class: "w-full text-left" 
+    - else
+      = link_to "Login", new_user_session_path, class: "btn btn-ghost"
+      = link_to "Sign Up", new_user_registration_path, class: "btn btn-primary"
