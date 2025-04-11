@@ -13,7 +13,8 @@ class Sample < ApplicationRecord
   # Play modes
   # 'exclusive' - stops all other sounds when played
   # 'simultaneous' - plays alongside other sounds
-  validates :play_mode, inclusion: { in: ['exclusive', 'simultaneous'] }
+  # 'loop' - plays the sound in a continuous loop
+  validates :play_mode, inclusion: { in: ['exclusive', 'simultaneous', 'loop'] }
   
   # List of available colors for the pads
   COLORS = [

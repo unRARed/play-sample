@@ -1,51 +1,51 @@
 = turbo_frame_tag "sample_pad_#{params[:position]}" do
-  .p-4.bg-base-200.rounded-lg.shadow-lg
-    h3.font-bold.text-lg.mb-4
-      i.fas.fa-music.mr-2
-      | Add New Sample to Pad #{params[:position]}
-    
+  .p-2.bg-base-200.rounded-lg.shadow-lg.overflow-y-auto.max-h-full.bg-gray-900
     = form_with(model: [@sample_pad, @sample], data: { turbo: true }) do |form|
-      .space-y-4
+      .space-y-3
         // Hidden field for position
         = form.hidden_field :position, value: params[:position]
 
-        // Sample name
+        // Sample name - no label
         .form-control
-          = form.label :name, class: "label font-semibold"
-          = form.text_field :name, class: "input input-bordered w-full", required: true, placeholder: "Kick Drum"
+          = form.text_field :name, class: "input input-bordered w-full input-sm text-sm bg-gray-800 border-gray-700", required: true, placeholder: "Kick Drum"
         
-        // Note: Label field removed - using name instead for display
+        // Use first color by default (hidden field)
+        = form.hidden_field :color, value: Sample::COLORS.first
         
-        // Color selection
-        .form-control
-          = form.label :color, class: "label font-semibold"
-          .grid.grid-cols-4.gap-2.mt-2
-            - Sample::COLORS.each do |color|
-              label.cursor-pointer
-                = form.radio_button :color, color, class: "hidden"
-                .w-full.aspect-square.rounded-md.border-2.transition-all.flex.items-center.justify-center data-color=color class="bg-#{color}-500 border-base-300 hover:border-primary"
-                  i.fas.fa-check.hidden data-color-check=color
+        // Play mode with radio buttons only - no label
+        .grid.grid-cols-3.gap-2.mt-2
+          / Exclusive option with icon above
+          .text-center
+            .icon.mb-1
+              i.fas.fa-volume-up.text-gray-300.text-lg
+            .text-xs.text-gray-300.font-medium Exclusive
+            .flex.justify-center.items-center.mt-1
+              = form.radio_button :play_mode, "exclusive", class: "radio radio-primary radio-sm", required: true, checked: true
+          
+          / Simultaneous option with icon above
+          .text-center
+            .icon.mb-1
+              i.fas.fa-layer-group.text-gray-300.text-lg
+            .text-xs.text-gray-300.font-medium Simultaneous
+            .flex.justify-center.items-center.mt-1
+              = form.radio_button :play_mode, "simultaneous", class: "radio radio-primary radio-sm", required: true
+          
+          / Loop option with icon above
+          .text-center
+            .icon.mb-1
+              i.fas.fa-sync-alt.text-gray-300.text-lg
+            .text-xs.text-gray-300.font-medium Loop
+            .flex.justify-center.items-center.mt-1
+              = form.radio_button :play_mode, "loop", class: "radio radio-primary radio-sm", required: true
         
-        // Play mode
-        .form-control
-          = form.label :play_mode, class: "label font-semibold"
-          .flex.space-x-4
-            label.cursor-pointer.flex.items-center
-              = form.radio_button :play_mode, "exclusive", class: "radio radio-primary mr-2", checked: true
-              span Exclusive
-            label.cursor-pointer.flex.items-center
-              = form.radio_button :play_mode, "simultaneous", class: "radio radio-primary mr-2"
-              span Simultaneous
-        
-        // Audio file
-        .form-control
-          = form.label :audio, class: "label font-semibold"
-          = form.file_field :audio, class: "file-input file-input-bordered w-full", accept: "audio/*", required: true, direct_upload: true
+        // Audio file - no label
+        .form-control.mt-4
+          = form.file_field :audio, class: "file-input file-input-bordered file-input-sm w-full text-xs bg-gray-800 border-gray-700", accept: "audio/*", required: true, direct_upload: true
 
-        // Buttons
-        .flex.justify-between.mt-6
-          = link_to "Cancel", sample_pad_path(@sample_pad), class: "btn btn-ghost"
-          = form.submit "Add Sample", class: "btn btn-primary"
+        // Buttons - smaller
+        .flex.justify-between.mt-4
+          = link_to "Cancel", sample_pad_path(@sample_pad), class: "btn btn-ghost btn-sm text-sm"
+          = form.submit "Add Sample", class: "btn btn-primary btn-sm text-sm"
 
 // Very minimal JavaScript for direct uploads
 javascript:

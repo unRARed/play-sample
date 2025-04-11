@@ -57,11 +57,20 @@ document.addEventListener('click', (event) => {
       if (data.play_mode === 'exclusive') {
         // Stop all currently playing audio
         stopAllAudio();
+      } else if (data.play_mode === 'loop') {
+        // Set to loop continuously
+        console.log("Setting loop mode for sample", data.id);
       }
       
       // Create and play the audio element
       const audio = new Audio(data.audio_url);
       audio.dataset.sampleId = data.id;
+      
+      // Configure loop mode if needed
+      if (data.play_mode === 'loop') {
+        audio.loop = true;
+      }
+      
       audio.play();
       
       // Store the audio element for later reference

@@ -1,41 +1,46 @@
 = turbo_frame_tag "sample_pad_#{@sample.position}" do
   .p-4.bg-base-200.rounded-lg.shadow-lg
-    h3.font-bold.text-lg.mb-4
-      i.fas.fa-edit.mr-2
-      | Edit Sample on Pad #{@sample.position}
-    
     = form_with(model: [@sample_pad, @sample], data: { turbo: true }) do |form|
       .space-y-4
         // Hidden field for position
         = form.hidden_field :position
+        = form.hidden_field :color
 
         // Sample name
         .form-control
           = form.label :name, class: "label font-semibold"
           = form.text_field :name, class: "input input-bordered w-full", required: true
-
-        // Note: Label field removed - using name instead for display
         
-        // Color selection
-        .form-control
-          = form.label :color, class: "label font-semibold"
-          .grid.grid-cols-4.gap-2.mt-2
-            - Sample::COLORS.each do |color|
-              label.cursor-pointer
-                = form.radio_button :color, color, class: "hidden"
-                .w-full.aspect-square.rounded-md.border-2.transition-all.flex.items-center.justify-center data-color=color class="bg-#{color}-500 border-base-300 hover:border-primary #{'border-primary border-4' if @sample.color == color}"
-                  i.fas.fa-check class="#{'hidden' unless @sample.color == color}" data-color-check=color
-        
-        // Play mode
+        // Play mode with fancy selector
         .form-control
           = form.label :play_mode, class: "label font-semibold"
-          .flex.space-x-4
-            label.cursor-pointer.flex.items-center
-              = form.radio_button :play_mode, "exclusive", class: "radio radio-primary mr-2"
-              span Exclusive
-            label.cursor-pointer.flex.items-center
-              = form.radio_button :play_mode, "simultaneous", class: "radio radio-primary mr-2"
-              span Simultaneous
+          .grid.grid-cols-3.gap-2.mt-2
+            / Exclusive option with icon
+            .play-mode-option
+              = form.radio_button :play_mode, "exclusive", class: "sr-only peer", required: true, checked: @sample.play_mode.nil? || @sample.play_mode == "exclusive"
+              label.flex.flex-col.items-center.p-3.rounded-lg.border.border-gray-300.cursor-pointer.bg-white.hover:bg-gray-50.peer-checked:border-primary.peer-checked:bg-primary-50.transition-all for="sample_play_mode_exclusive"
+                .icon.text-2xl.mb-2
+                  i.fas.fa-volume-up
+                .text-sm.font-medium Exclusive
+                .text-xs.text-gray-500 Stops other samples
+            
+            / Simultaneous option with icon
+            .play-mode-option
+              = form.radio_button :play_mode, "simultaneous", class: "sr-only peer", required: true
+              label.flex.flex-col.items-center.p-3.rounded-lg.border.border-gray-300.cursor-pointer.bg-white.hover:bg-gray-50.peer-checked:border-primary.peer-checked:bg-primary-50.transition-all for="sample_play_mode_simultaneous"
+                .icon.text-2xl.mb-2
+                  i.fas.fa-layer-group
+                .text-sm.font-medium Simultaneous
+                .text-xs.text-gray-500 Plays alongside others
+            
+            / Loop option with icon
+            .play-mode-option
+              = form.radio_button :play_mode, "loop", class: "sr-only peer", required: true
+              label.flex.flex-col.items-center.p-3.rounded-lg.border.border-gray-300.cursor-pointer.bg-white.hover:bg-gray-50.peer-checked:border-primary.peer-checked:bg-primary-50.transition-all for="sample_play_mode_loop"
+                .icon.text-2xl.mb-2
+                  i.fas.fa-sync-alt
+                .text-sm.font-medium Loop
+                .text-xs.text-gray-500 Continuous playback
         
         // Current audio file info
         - if @sample.audio.attached?

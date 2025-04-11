@@ -3,12 +3,6 @@
     = f.label :name, class: "block text-sm font-medium mb-1"
     = f.text_field :name, class: "input input-bordered w-full", placeholder: "Sample name", required: true, data: { sample_form_target: "name" }
     .error-msg.text-error.text-xs.mt-1.hidden data-sample-form-target="nameError" Name is required
-
-  .mb-4
-    = f.label :label, class: "block text-sm font-medium mb-1"
-    = f.text_field :label, class: "input input-bordered w-full", placeholder: "Button label", required: true, data: { sample_form_target: "label" }
-    p.text-xs.text-base-content.opacity-70.mt-1 This will appear on the button
-    .error-msg.text-error.text-xs.mt-1.hidden data-sample-form-target="labelError" Label is required
     
   .mb-4
     = f.label :color, class: "block text-sm font-medium mb-1"
@@ -21,13 +15,33 @@
 
   .mb-4
     = f.label :play_mode, class: "block text-sm font-medium mb-1"
-    .flex.space-x-4
-      label.cursor-pointer.flex.items-center
-        = f.radio_button :play_mode, "exclusive", class: "radio radio-primary mr-2", required: true, checked: true
-        span Exclusive (stops other samples)
-      label.cursor-pointer.flex.items-center
-        = f.radio_button :play_mode, "simultaneous", class: "radio radio-primary mr-2"
-        span Simultaneous
+    .grid.grid-cols-3.gap-2.mt-2
+      / Exclusive option with icon
+      .play-mode-option
+        = f.radio_button :play_mode, "exclusive", class: "sr-only peer", required: true, checked: sample.play_mode.nil? || sample.play_mode == "exclusive"
+        label.flex.flex-col.items-center.p-3.rounded-lg.border.border-gray-300.cursor-pointer.bg-white.hover:bg-gray-50.peer-checked:border-primary.peer-checked:bg-primary-50.transition-all for="sample_play_mode_exclusive"
+          .icon.text-2xl.mb-2
+            i.fas.fa-volume-up
+          .text-sm.font-medium Exclusive
+          .text-xs.text-gray-500 Stops other samples
+      
+      / Simultaneous option with icon
+      .play-mode-option
+        = f.radio_button :play_mode, "simultaneous", class: "sr-only peer", required: true
+        label.flex.flex-col.items-center.p-3.rounded-lg.border.border-gray-300.cursor-pointer.bg-white.hover:bg-gray-50.peer-checked:border-primary.peer-checked:bg-primary-50.transition-all for="sample_play_mode_simultaneous"
+          .icon.text-2xl.mb-2
+            i.fas.fa-layer-group
+          .text-sm.font-medium Simultaneous
+          .text-xs.text-gray-500 Plays alongside others
+      
+      / Loop option with icon
+      .play-mode-option
+        = f.radio_button :play_mode, "loop", class: "sr-only peer", required: true
+        label.flex.flex-col.items-center.p-3.rounded-lg.border.border-gray-300.cursor-pointer.bg-white.hover:bg-gray-50.peer-checked:border-primary.peer-checked:bg-primary-50.transition-all for="sample_play_mode_loop"
+          .icon.text-2xl.mb-2
+            i.fas.fa-sync-alt
+          .text-sm.font-medium Loop
+          .text-xs.text-gray-500 Continuous playback
 
   .mb-4
     = f.label :audio, class: "block text-sm font-medium mb-1"
