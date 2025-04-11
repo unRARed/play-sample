@@ -1,0 +1,9 @@
+<%# This partial is used to close the modal via turbo_stream.replace %>
+<turbo-frame id="modal">
+  <script>
+    // Wait for DOM to be ready then close the modal
+    setTimeout(function() {
+      document.getElementById('modal-container').classList.add('hidden');
+    }, 0);
+  </script>
+</turbo-frame>

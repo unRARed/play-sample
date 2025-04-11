@@ -11,57 +11,60 @@ div class="pb-16"
       = button_to stop_all_samples_path, class: "btn btn-error btn-sm" do
         i.fas.fa-stop.mr-1
         | Stop All
+
   // Now Playing section moved to a fixed bottom bar
   h2.text-2xl.font-bold.mb-4 Sample Grid
-  
-  // Desktop view (all 16 pads)
-  .grid.grid-cols-4.gap-4.mb-8.hidden.md:grid
-    - 16.times do |index|
-      - sample = @samples.find_by(position: index)
-      = turbo_frame_tag "sample_pad_#{index}" do
-        - if sample
-          = render "samples/pad", sample: sample, pad: @sample_pad
-        - else
-          // Empty pad with Turbo Frame for in-place loading
-          = link_to new_sample_pad_sample_path(@sample_pad, position: index), class: "block" do
-            .aspect-square.bg-base-300.rounded-lg.flex.items-center.justify-center.text-center.opacity-70.cursor-pointer id="empty-pad-#{index}"
-              .p-4
-                i.fas.fa-plus.mb-2.text-2xl
-                p.text-sm Add Sample
-  
-  // Mobile view (8 pads per page)
-  .md:hidden
-    // First page (pads 0-7)
-    .grid.grid-cols-2.sm:grid-cols-4.gap-4.mb-4
-      - 8.times do |index|
+
+  / Container with max-width to prevent oversized pads on large screens
+  div class="max-w-[1024px] mx-auto"
+    / Desktop view (all 16 pads)
+    .grid.grid-cols-4.gap-4.mb-8.hidden.md:grid
+      - 16.times do |index|
         - sample = @samples.find_by(position: index)
         = turbo_frame_tag "sample_pad_#{index}" do
           - if sample
             = render "samples/pad", sample: sample, pad: @sample_pad
           - else
-            // Empty pad with Turbo Frame for in-place loading
+            / Empty pad with Turbo Frame for in-place loading
             = link_to new_sample_pad_sample_path(@sample_pad, position: index), class: "block" do
               .aspect-square.bg-base-300.rounded-lg.flex.items-center.justify-center.text-center.opacity-70.cursor-pointer id="empty-pad-#{index}"
                 .p-4
                   i.fas.fa-plus.mb-2.text-2xl
-                  p.text-xs Add Sample
+                  p.text-sm Add Sample
     
-    // Second page (pads 8-15)
-    .grid.grid-cols-2.sm:grid-cols-4.gap-4.mb-4.hidden
-      - 8.times do |index|
-        - sample = @samples.find_by(position: index + 8)
-        = turbo_frame_tag "sample_pad_#{index + 8}" do
-          - if sample
-            = render "samples/pad", sample: sample, pad: @sample_pad
-          - else
-            // Empty pad with Turbo Frame for in-place loading
-            = link_to new_sample_pad_sample_path(@sample_pad, position: index + 8), class: "block" do
-              .aspect-square.bg-base-300.rounded-lg.flex.items-center.justify-center.text-center.opacity-70.cursor-pointer id="empty-pad-#{index + 8}"
-                .p-4
-                  i.fas.fa-plus.mb-2.text-2xl
-                  p.text-xs Add Sample
+    / Mobile view (8 pads per page)
+    .md:hidden
+      / First page (pads 0-7)
+      .grid.grid-cols-2.sm:grid-cols-4.gap-4.mb-4
+        - 8.times do |index|
+          - sample = @samples.find_by(position: index)
+          = turbo_frame_tag "sample_pad_#{index}" do
+            - if sample
+              = render "samples/pad", sample: sample, pad: @sample_pad
+            - else
+              / Empty pad with Turbo Frame for in-place loading
+              = link_to new_sample_pad_sample_path(@sample_pad, position: index), class: "block" do
+                .aspect-square.bg-base-300.rounded-lg.flex.items-center.justify-center.text-center.opacity-70.cursor-pointer id="empty-pad-#{index}"
+                  .p-4
+                    i.fas.fa-plus.mb-2.text-2xl
+                    p.text-xs Add Sample
       
-    // Page indicator and navigation for mobile
+      / Second page (pads 8-15)
+      .grid.grid-cols-2.sm:grid-cols-4.gap-4.mb-4.hidden
+        - 8.times do |idx|
+          - sample = @samples.find_by(position: idx + 8)
+          = turbo_frame_tag "sample_pad_#{idx + 8}" do
+            - if sample
+              = render "samples/pad", sample: sample, pad: @sample_pad
+            - else
+              / Empty pad with Turbo Frame for in-place loading
+              = link_to new_sample_pad_sample_path(@sample_pad, position: idx + 8), class: "block" do
+                .aspect-square.bg-base-300.rounded-lg.flex.items-center.justify-center.text-center.opacity-70.cursor-pointer id="empty-pad-#{idx + 8}"
+                  .p-4
+                    i.fas.fa-plus.mb-2.text-2xl
+                    p.text-xs Add Sample
+    
+    / Page indicator and navigation for mobile
     .flex.justify-between.items-center.mt-2.mb-6
       button.btn.btn-sm.btn-ghost type="button"
         i.fas.fa-chevron-left.mr-1
@@ -71,14 +74,14 @@ div class="pb-16"
         | Next
         i.fas.fa-chevron-right.ml-1
 
-  // Sample edit modal for turbo frames
-  #sample-edit-modal.modal
+/ Sample edit modal for turbo frames
+#sample-edit-modal.modal
 
-  // Fixed bottom player 
-  #player-bar.fixed.bottom-0.left-0.right-0.z-50
-    .bg-base-300.p-4.border-t.flex.items-center.justify-between
-      .flex.items-center
-        i.fas.fa-music.text-xl.mr-3
-        .text-sm
-          p.font-bold No sample playing
-          p.text-xs Select a sample to play
+/ Fixed bottom player 
+#player-bar.fixed.bottom-0.left-0.right-0.z-50
+  .bg-base-300.p-4.border-t.flex.items-center.justify-between
+    .flex.items-center
+      i.fas.fa-music.text-xl.mr-3
+      .text-sm
+        p.font-bold No sample playing
+        p.text-xs Select a sample to play

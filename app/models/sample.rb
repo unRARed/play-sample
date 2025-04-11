@@ -3,7 +3,7 @@ class Sample < ApplicationRecord
   has_one_attached :audio
   
   validates :name, presence: true
-  validates :label, presence: true
+  # Label no longer required - using name instead
   validates :color, presence: true
   validates :audio, presence: true,
                     content_type: { with: ['audio/mpeg', 'audio/mp4', 'audio/ogg', 'audio/aac', 'audio/x-m4a', 'audio/x-aiff', 'audio/x-flac', 'application/ogg'],

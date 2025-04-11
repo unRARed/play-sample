@@ -1,0 +1,21 @@
+= turbo_frame_tag "modal" do
+  / Compact color editor modal
+  .bg-base-100.p-3.rounded-lg.shadow-md.mx-auto.max-w-md
+    / Sample name as small header
+    .flex.items-center.mb-2
+      .w-8.h-8.rounded-md.mr-2 class="bg-#{@sample.color}-500"
+      p.text-sm.font-medium
+        = @sample.name
+    
+    / Color selection grid - smaller, more compact
+    .grid.grid-cols-4.gap-1
+      - Sample::COLORS.each do |color|
+        / Using a form to properly submit the color parameter
+        = form_with(url: update_color_sample_pad_sample_path(@sample_pad, @sample), method: :patch, class: "block") do |form|
+          = form.hidden_field :sample, value: {color: color}.to_json
+          = button_tag type: "submit", class: "w-full p-0 border-0 bg-transparent" do
+            .w-full.aspect-square.rounded-md.border.transition-all.flex.items-center.justify-center class="bg-#{color}-500 border-gray-300 hover:border-primary #{@sample.color == color ? 'ring-2 ring-primary' : ''}"
+              - if @sample.color == color
+                i.fas.fa-check.text-white
+
+

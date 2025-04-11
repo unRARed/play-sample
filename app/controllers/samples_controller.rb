@@ -32,6 +32,41 @@ class SamplesController < ApplicationController
     render :edit
   end
   
+  # GET /sample_pads/:sample_pad_id/samples/:id/edit_color
+  def edit_color
+    @sample = @sample_pad.samples.find(params[:id])
+    # Render in a modal for just color editing
+    render layout: false
+  end
+  
+  # PATCH /sample_pads/:sample_pad_id/samples/:id/update_color
+  def update_color
+    @sample = @sample_pad.samples.find(params[:id])
+    
+    respond_to do |format|
+      if @sample.update(color_params)
+        format.html { redirect_to sample_pad_path(@sample_pad), notice: "Sample color was successfully updated." }
+        format.turbo_stream { 
+          flash.now[:notice] = "Sample color was successfully updated."
+          # Use an array of turbo stream tags instead of multi
+          render turbo_stream: [
+            turbo_stream.replace("sample_pad_#{@sample.position}", 
+                           partial: "samples/pad", 
+                           locals: { sample: @sample, pad: @sample_pad }),
+            # Use a dedicated partial to close the modal
+            turbo_stream.replace("modal", partial: "samples/close_modal")
+          ]
+        }
+      else
+        format.html { render :edit_color, status: :unprocessable_entity }
+        format.turbo_stream { 
+          flash.now[:alert] = @sample.errors.full_messages.join(", ")
+          render :edit_color, status: :unprocessable_entity 
+        }
+      end
+    end
+  end
+  
   # POST /sample_pads/:sample_pad_id/samples
   def create
     @sample = @sample_pad.samples.new(sample_params)
@@ -156,6 +191,23 @@ class SamplesController < ApplicationController
   end
   
   def sample_params
-    params.require(:sample).permit(:name, :label, :color, :play_mode, :audio, :position)
+    params.require(:sample).permit(:name, :color, :play_mode, :audio, :position)
+  end
+  
+  def color_params
+    # Handle both direct parameters and JSON string from the form
+    if params[:sample].is_a?(String)
+      begin
+        # Parse the JSON string from the form
+        json_params = JSON.parse(params[:sample])
+        return ActionController::Parameters.new(json_params).permit(:color)
+      rescue JSON::ParserError
+        # If parsing fails, return empty params
+        return ActionController::Parameters.new({}).permit(:color)
+      end
+    else
+      # Handle regular parameters
+      params.require(:sample).permit(:color)
+    end
   end
 end

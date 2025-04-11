@@ -6,7 +6,12 @@ Rails.application.routes.draw do
   
   # RESTful resources
   resources :sample_pads do
-    resources :samples, except: [:show]
+    resources :samples, except: [:show] do
+      member do
+        get :edit_color
+        patch :update_color
+      end
+    end
   end
   
   # Player control routes

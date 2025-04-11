@@ -2,6 +2,23 @@
 import "@hotwired/turbo";
 import "@rails/activestorage";
 
+// Modal handling
+document.addEventListener("turbo:frame-load", (event) => {
+  if (event.target.id === "modal") {
+    document.getElementById("modal-container").classList.remove("hidden");
+  }
+});
+
+// Close modal when clicking the close button or outside the modal
+document.addEventListener("click", (event) => {
+  const modalContainer = document.getElementById("modal-container");
+  const closeButton = modalContainer.querySelector("button");
+  
+  if (event.target === modalContainer || event.target === closeButton || event.target.closest('button[data-action="click->modal#close"]')) {
+    modalContainer.classList.add("hidden");
+  }
+});
+
 // Initialize ActiveStorage
 addEventListener("turbo:load", () => {
   const directUploadInput = document.querySelector('input[type="file"][direct_upload]');
