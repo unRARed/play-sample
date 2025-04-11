@@ -6,11 +6,17 @@ Rails.application.routes.draw do
   
   # RESTful resources
   resources :sample_pads do
-    resources :samples, except: [:index, :show, :new, :edit]
+    resources :samples, except: [:show]
   end
   
   # Player control routes
-  post "/samples/:id/play", to: "samples#play", as: :play_sample
+  resources :sample_pads do
+    resources :samples, only: [] do
+      member do
+        post :play
+      end
+    end
+  end
   post "/samples/stop_all", to: "samples#stop_all", as: :stop_all_samples
   get "home/index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

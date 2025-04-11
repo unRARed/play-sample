@@ -1,0 +1,112 @@
+= turbo_frame_tag "sample_pad_#{params[:position]}" do
+  .p-4.bg-base-200.rounded-lg.shadow-lg
+    h3.font-bold.text-lg.mb-4
+      i.fas.fa-music.mr-2
+      | Add New Sample to Pad #{params[:position]}
+    
+    = form_with(model: [@sample_pad, @sample], data: { turbo: true }) do |form|
+      .space-y-4
+        // Hidden field for position
+        = form.hidden_field :position, value: params[:position]
+
+        // Sample name
+        .form-control
+          = form.label :name, class: "label font-semibold"
+          = form.text_field :name, class: "input input-bordered w-full", required: true, placeholder: "Kick Drum"
+        
+        // Display label
+        .form-control
+          = form.label :label, class: "label font-semibold"
+          = form.text_field :label, class: "input input-bordered w-full", required: true, placeholder: "KICK", maxlength: 4
+        
+        // Color selection
+        .form-control
+          = form.label :color, class: "label font-semibold"
+          .grid.grid-cols-4.gap-2.mt-2
+            - Sample::COLORS.each do |color|
+              label.cursor-pointer
+                = form.radio_button :color, color, class: "hidden"
+                .w-full.aspect-square.rounded-md.border-2.transition-all.flex.items-center.justify-center data-color=color class="bg-#{color}-500 border-base-300 hover:border-primary"
+                  i.fas.fa-check.hidden data-color-check=color
+        
+        // Play mode
+        .form-control
+          = form.label :play_mode, class: "label font-semibold"
+          .flex.space-x-4
+            label.cursor-pointer.flex.items-center
+              = form.radio_button :play_mode, "exclusive", class: "radio radio-primary mr-2", checked: true
+              span Exclusive
+            label.cursor-pointer.flex.items-center
+              = form.radio_button :play_mode, "simultaneous", class: "radio radio-primary mr-2"
+              span Simultaneous
+        
+        // Audio file
+        .form-control
+          = form.label :audio, class: "label font-semibold"
+          = form.file_field :audio, class: "file-input file-input-bordered w-full", accept: "audio/*", required: true, direct_upload: true
+
+        // Buttons
+        .flex.justify-between.mt-6
+          = link_to "Cancel", sample_pad_path(@sample_pad), class: "btn btn-ghost"
+          = form.submit "Add Sample", class: "btn btn-primary"
+
+// Very minimal JavaScript for direct uploads
+javascript:
+  document.addEventListener('direct-upload:initialize', event => {
+    const { target, detail } = event
+    const { id, file } = detail
+    
+    // Create progress bar
+    const progressBar = document.createElement('div')
+    progressBar.id = `direct-upload-${id}`
+    progressBar.classList.add('progress', 'w-full', 'mt-2')
+    
+    // Create progress bar inner
+    const progressInner = document.createElement('div')
+    progressInner.classList.add('progress-bar', 'bg-primary')
+    progressInner.style.width = '0%'
+    progressBar.appendChild(progressInner)
+    
+    // Add progress bar after file input
+    target.insertAdjacentElement('afterend', progressBar)
+  })
+  
+  document.addEventListener('direct-upload:progress', event => {
+    const { id, progress } = event.detail
+    const progressInner = document.querySelector(`#direct-upload-${id} .progress-bar`)
+    if (progressInner) {
+      progressInner.style.width = `${progress}%`
+    }
+  })
+  
+  // Color selector
+  document.addEventListener('turbo:load', () => {
+    const colorInputs = document.querySelectorAll('input[type="radio"][name*="color"]')
+    colorInputs.forEach(input => {
+      input.addEventListener('change', () => {
+        // Hide all checks
+        document.querySelectorAll('[data-color-check]').forEach(check => check.classList.add('hidden'))
+        
+        // Add border to selected color
+        document.querySelectorAll('[data-color]').forEach(el => {
+          el.classList.remove('border-primary')
+          el.classList.add('border-base-300')
+        })
+        
+        if (input.checked) {
+          const color = input.value
+          const colorEl = document.querySelector(`[data-color="${color}"]`)
+          const checkIcon = document.querySelector(`[data-color-check="${color}"]`)
+          
+          if (colorEl) {
+            colorEl.classList.remove('border-base-300')
+            colorEl.classList.add('border-primary', 'border-4')
+          }
+          
+          if (checkIcon) {
+            checkIcon.classList.remove('hidden')
+          }
+        }
+      })
+    })
+  })

@@ -2,6 +2,8 @@
   "name": "sample_player",
   "private": true,
   "dependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/turbo-rails": "^8.0.13",
     "autoprefixer": "^10.4.17",
     "daisyui": "^4.12.24",
     "postcss": "^8.4.35",

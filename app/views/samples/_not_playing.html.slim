@@ -1,5 +1,8 @@
-.flex.items-center.justify-between.p-3.bg-base-300.rounded-lg
+.flex.items-center.justify-between.p-2.bg-base-300.rounded-t-md.shadow-lg
   .flex.items-center.text-base-content
-    i.fas.fa-volume-mute.text-xl.mr-3
-    span.text-lg No sample playing
-  .text-sm.opacity-70 Select a sample to play
+    i.fas.fa-volume-mute.text-lg.mr-2
+    .flex.flex-col
+      span.text-sm.font-medium No sample playing
+      .text-xs.opacity-70 Tap a pad to play a sample
+  button.btn.btn-sm.btn-ghost.p-1 data-action="sample-player#stopAll"
+    i.fas.fa-stop.text-sm

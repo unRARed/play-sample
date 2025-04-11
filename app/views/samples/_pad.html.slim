@@ -1,4 +1,15 @@
-.sample-pad data-sample-id=sample.id data-action="click->sample-player#playSample" class="bg-#{sample.color}-500 hover:bg-#{sample.color}-600" style="min-height: 100px;"
-  .p-2
-    h3.font-bold.text-white.truncate.w-full = sample.label
-    .text-white.text-xs.mt-1.opacity-80 = sample.name
+= turbo_frame_tag "sample_pad_#{sample.position}" do
+  .sample-pad.aspect-square.w-full.rounded-lg.shadow-md.relative class="bg-#{sample.color}-500 hover:bg-#{sample.color}-600" data-sample-id=sample.id
+    // Main pad content that plays the sample when clicked
+    = link_to play_sample_pad_sample_path(pad, sample), class: "absolute inset-0 z-10", data: { turbo_method: :post } do
+      span.sr-only Play #{sample.name}
+      
+    // Sample information
+    .p-3.flex.flex-col.justify-between.h-full
+      h3.font-bold.text-white.truncate.w-full = sample.label
+      .text-white.text-xs.mt-1.opacity-80.truncate = sample.name
+      
+    // Edit button (appears on hover)
+    .absolute.top-2.right-2.opacity-0.hover:opacity-100.transition-opacity
+      = link_to edit_sample_pad_sample_path(pad, sample), class: "p-1 bg-base-100 bg-opacity-50 rounded-full text-white" do
+        i.fas.fa-pencil.text-xs
