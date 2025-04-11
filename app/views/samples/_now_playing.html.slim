@@ -4,8 +4,7 @@
       .w-8.h-8.rounded-md.flex.items-center.justify-center.text-white class="bg-#{sample.color}-500" 
         i.fas.fa-music
       .ml-3
-        .font-bold = sample.label
-        .text-sm.opacity-80 = sample.name
+        .font-bold = sample.name
     button.btn.btn-ghost.btn-sm.btn-circle data-action="click->sample-player#stopSample" data-sample-id=sample.id
       i.fas.fa-stop
   

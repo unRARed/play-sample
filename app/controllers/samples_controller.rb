@@ -135,7 +135,6 @@ class SamplesController < ApplicationController
       format.json { render json: { 
         id: @sample.id, 
         name: @sample.name, 
-        label: @sample.label, 
         color: @sample.color, 
         play_mode: @sample.play_mode, 
         audio_url: rails_blob_path(@sample.audio, disposition: "attachment") 

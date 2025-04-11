@@ -1223,6 +1223,17 @@ Further refined the edit functionality for consistency and improved UX:
    - Ensured consistent branding throughout the entire application
    - Maintained all functionality while presenting a refreshed identity
 
+8. Database Schema Cleanup (2025-04-11 00:32:25):
+   - Removed the unused 'label' column from the samples table
+   - Created and ran a migration to eliminate the redundant field
+   - Fixed references to the removed column in multiple views:
+     - Updated the player partial to use sample name instead of label
+     - Fixed the now_playing partial removing label references
+     - Updated the playing partial to use only the sample name
+     - Removed label from JSON response in samples controller
+   - Streamlined the data model to rely solely on the 'name' field
+   - Eliminated TurboFrameMissingError caused by removed attribute
+
 ---
 
 *This document will be updated with each new prompt to maintain a clear history of the project's evolution.*

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_10_072305) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_11_073048) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -49,7 +49,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_10_072305) do
 
   create_table "samples", force: :cascade do |t|
     t.string "name"
-    t.string "label"
     t.string "color"
     t.string "play_mode"
     t.integer "sample_pad_id", null: false
