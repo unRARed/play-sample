@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   resources :sample_pads do
     resources :samples, only: [] do
       member do
-        post :play
+        match :play, via: [:get, :post]
       end
     end
   end
