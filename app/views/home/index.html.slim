@@ -1,13 +1,13 @@
 .hero.bg-base-300.rounded-lg.p-8.mb-8
   .hero-content.flex-col.lg:flex-row
     .max-w-md.prose
-      h1.text-5xl.font-bold Sample Player
+      h1.text-5xl.font-bold Play Sample
       p.py-6 Create, organize, and play audio samples with customizable pads. Upload your audio files and trigger them with a simple click, just like the Akai MPX8.
       - if user_signed_in?
         = link_to "View My Sample Pad", current_user.sample_pad ? sample_pad_path(current_user.sample_pad) : new_sample_pad_path, class: "btn btn-primary"
       - else
         = link_to "Get Started", new_user_registration_path, class: "btn btn-primary"
-    img.max-w-sm.rounded-lg.shadow-2xl alt="Sample Player" src="/assets/sample-player.png" /
+    img.max-w-sm.rounded-lg.shadow-2xl alt="Play Sample" src="/assets/sample-player.png" /
 
 - if user_signed_in?
   .my-8

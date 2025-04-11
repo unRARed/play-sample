@@ -1,6 +1,6 @@
-# Sample Player Application - Prompt History
+# Play Sample Application - Prompt History
 
-This document tracks the evolution of prompts and requirements for the Sample Player application.
+This document tracks the evolution of prompts and requirements for the Play Sample application.
 
 ## Initial Requirements (2025-04-09 22:50:49)
 
@@ -1210,6 +1210,18 @@ Further refined the edit functionality for consistency and improved UX:
    - Preserved the position information during sample deletion
    - Implemented proper Turbo Stream response rendering
    - Ensured deleted samples are replaced with empty pad placeholders
+
+7. Application Rebranding (2025-04-11 00:24:31):
+   - Renamed the application from "Sample Player" to "Play Sample"
+   - Updated all visible text references across the entire application:
+     - Changed browser tab title and navbar branding
+     - Updated home page hero section and image alt text
+     - Replaced references in login and signup pages
+     - Modified all email templates (confirmation, password reset, etc.)
+     - Updated footer text
+   - Modified README.md and PROMPTS.md to reflect the new name
+   - Ensured consistent branding throughout the entire application
+   - Maintained all functionality while presenting a refreshed identity
 
 ---
 

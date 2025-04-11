@@ -1,8 +1,8 @@
-# Sample Player - A Windsurf "Vibe Coding" Experiment
+# Play Sample - A Windsurf "Vibe Coding" Experiment
 
 ## About This Project
 
-This project was created as part of a Windsurf "Vibe Coding" experiment to showcase the capabilities of AI-assisted coding. The Sample Player is an interactive web application built with Ruby on Rails 8 that allows users to create and interact with a customizable sample pad interface.
+This project was created as part of a Windsurf "Vibe Coding" experiment to showcase the capabilities of AI-assisted coding. Play Sample is an interactive web application built with Ruby on Rails 8 that allows users to create and interact with a customizable sample pad interface.
 
 ## What is "Vibe Coding"?
 
