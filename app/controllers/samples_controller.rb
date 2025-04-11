@@ -95,20 +95,34 @@ class SamplesController < ApplicationController
     respond_to do |format|
       if @sample.update(sample_params)
         format.html { redirect_to sample_pad_path(@sample_pad), notice: "Sample was successfully updated." }
-        format.turbo_stream { flash.now[:notice] = "Sample was successfully updated." }
+        format.turbo_stream do
+          flash.now[:notice] = "Sample was successfully updated."
+          render turbo_stream: turbo_stream.replace("sample_pad_#{@sample.position}", 
+                                               partial: "samples/pad", 
+                                               locals: { sample: @sample, pad: @sample_pad })
+        end
       else
         format.html { redirect_to sample_pad_path(@sample_pad), status: :unprocessable_entity, alert: @sample.errors.full_messages.join(", ") }
-        format.turbo_stream { flash.now[:alert] = @sample.errors.full_messages.join(", ") }
+        format.turbo_stream do
+          flash.now[:alert] = @sample.errors.full_messages.join(", ")
+          render :edit, status: :unprocessable_entity
+        end
       end
     end
   end
 
   def destroy
+    position = @sample.position
     @sample.destroy
     
     respond_to do |format|
       format.html { redirect_to sample_pad_path(@sample_pad), notice: "Sample was successfully removed." }
-      format.turbo_stream { flash.now[:notice] = "Sample was successfully removed." }
+      format.turbo_stream do
+        flash.now[:notice] = "Sample was successfully removed."
+        render turbo_stream: turbo_stream.replace("sample_pad_#{position}",
+          partial: "samples/empty_pad",
+          locals: { position: position, pad: @sample_pad })
+      end
     end
   end
   

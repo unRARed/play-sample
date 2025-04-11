@@ -5,13 +5,15 @@
       | Sample Player
       
   .navbar-center
-    - if user_signed_in? && controller_name != "home"
-      = link_to "My Sample Pad", current_user.sample_pad ? sample_pad_path(current_user.sample_pad) : new_sample_pad_path, class: "btn btn-ghost"
-      - if controller_name == "sample_pads" && action_name == "show"
-        button#stop-all-btn.btn.btn-error onclick="stopAllSamples()" Stop All
+    / Center content removed
   
   .navbar-end
     - if user_signed_in?
+      / PANIC button - stops all audio
+      button#panic-btn.btn.btn-warning.btn-sm.mr-2 onclick="stopAllSamples()" 
+        span.font-bold.text-black PANIC
+        i.fas.fa-triangle-exclamation.ml-1.text-black
+      
       .dropdown.dropdown-hover.dropdown-end
         .btn.btn-ghost.btn-circle.avatar
           .rounded-full.w-10.h-10.bg-primary.flex.items-center.justify-center.text-primary-content

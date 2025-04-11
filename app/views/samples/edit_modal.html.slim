@@ -1,5 +1,5 @@
-= turbo_frame_tag "sample_pad_#{@sample.position}" do
-  .p-2.bg-base-200.rounded-lg.shadow-lg.overflow-y-auto.max-h-full.bg-gray-900
+= turbo_frame_tag "modal" do
+  .p-2.overflow-y-auto.max-h-full
     = form_with(model: [@sample_pad, @sample], data: { turbo: true }) do |form|
       .space-y-3
         // Hidden field for position
@@ -52,41 +52,8 @@
         // Buttons - smaller and styled to match new form
         .flex.justify-between.mt-4
           .flex.space-x-2
-            = link_to "Cancel", sample_pad_path(@sample_pad), class: "btn btn-ghost btn-sm text-sm"
+            = link_to "Cancel", "#", class: "btn btn-ghost btn-sm text-sm", data: { action: "click->modal#close" }
             = link_to "Delete", sample_pad_sample_path(@sample_pad, @sample), 
                       class: "btn btn-error btn-sm text-sm", 
                       data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }
           = form.submit "Update", class: "btn btn-primary btn-sm text-sm"
-
-// Color selector JavaScript
-javascript:
-  document.addEventListener('turbo:load', () => {
-    const colorInputs = document.querySelectorAll('input[type="radio"][name*="color"]')
-    colorInputs.forEach(input => {
-      input.addEventListener('change', () => {
-        // Hide all checks
-        document.querySelectorAll('[data-color-check]').forEach(check => check.classList.add('hidden'))
-        
-        // Reset all borders
-        document.querySelectorAll('[data-color]').forEach(el => {
-          el.classList.remove('border-primary', 'border-4')
-          el.classList.add('border-base-300')
-        })
-        
-        if (input.checked) {
-          const color = input.value
-          const colorEl = document.querySelector(`[data-color="${color}"]`)
-          const checkIcon = document.querySelector(`[data-color-check="${color}"]`)
-          
-          if (colorEl) {
-            colorEl.classList.remove('border-base-300')
-            colorEl.classList.add('border-primary', 'border-4')
-          }
-          
-          if (checkIcon) {
-            checkIcon.classList.remove('hidden')
-          }
-        }
-      })
-    })
-  })

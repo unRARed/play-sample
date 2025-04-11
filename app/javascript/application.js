@@ -84,8 +84,7 @@ document.addEventListener('click', (event) => {
             <div class="flex items-center">
               <i class="fas fa-play-circle text-xl mr-3 text-primary"></i>
               <div class="text-sm">
-                <p class="font-bold">Now Playing: ${data.label}</p>
-                <p class="text-xs">${data.name}</p>
+                <p class="font-bold">Now Playing: ${data.name}</p>
               </div>
             </div>
             <button class="btn btn-sm btn-ghost" onclick="stopAllAudio()">
@@ -127,6 +126,15 @@ window.stopAllAudio = function() {
       </div>
     `;
   }
+  
+  console.log("All audio stopped");
+};
+
+// Global function for the PANIC button
+window.stopAllSamples = function() {
+  console.log("PANIC button pressed - stopping all sounds");
+  window.stopAllAudio();
+  return false; // Prevent default form submission
 };
 
 // Also handle stop button clicks from Turbo Stream updates
@@ -134,4 +142,70 @@ document.addEventListener('click', (event) => {
   if (event.target.closest('button[onclick="stopAllAudio()"]')) {
     stopAllAudio();
   }
+});
+
+// Swipe functionality for mobile sample pad navigation
+document.addEventListener('DOMContentLoaded', () => {
+  const swipeContainer = document.querySelector('[data-controller="swipe"]');
+  if (!swipeContainer) return;
+  
+  const pages = document.querySelectorAll('[data-swipe-target="page"]');
+  const indicators = document.querySelectorAll('[data-swipe-target="indicator"]');
+  let currentPage = 1;
+  let touchStartX = 0;
+  let touchEndX = 0;
+  
+  // Handle touch start
+  swipeContainer.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, false);
+  
+  // Handle touch end
+  swipeContainer.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+  }, false);
+  
+  // Calculate swipe direction and change page
+  const handleSwipe = () => {
+    const swipeThreshold = 50; // Minimum distance to register as a swipe
+    const swipeDistance = touchEndX - touchStartX;
+    
+    if (Math.abs(swipeDistance) < swipeThreshold) return;
+    
+    if (swipeDistance > 0 && currentPage > 1) {
+      // Swipe right - go to previous page
+      changePage(currentPage - 1);
+    } else if (swipeDistance < 0 && currentPage < pages.length) {
+      // Swipe left - go to next page
+      changePage(currentPage + 1);
+    }
+  };
+  
+  // Change to specified page
+  const changePage = (newPage) => {
+    // Hide all pages
+    pages.forEach(page => {
+      page.classList.add('hidden');
+    });
+    
+    // Show new page
+    document.querySelector(`[data-page="${newPage}"]`).classList.remove('hidden');
+    
+    // Update indicators
+    indicators.forEach(indicator => {
+      indicator.classList.remove('bg-primary');
+      indicator.classList.add('bg-gray-400');
+      indicator.setAttribute('data-active', 'false');
+    });
+    
+    document.querySelector(`#dot-${newPage}`).classList.remove('bg-gray-400');
+    document.querySelector(`#dot-${newPage}`).classList.add('bg-primary');
+    document.querySelector(`#dot-${newPage}`).setAttribute('data-active', 'true');
+    
+    // Update current page
+    currentPage = newPage;
+    
+    console.log(`Swiped to page ${currentPage}`);
+  };
 });

@@ -1,0 +1,7 @@
+= turbo_frame_tag "sample_pad_#{position}" do
+  / Empty pad with Turbo Frame for in-place loading
+  = link_to new_sample_pad_sample_path(pad, position: position), class: "block" do
+    .aspect-square.bg-base-300.rounded-lg.flex.items-center.justify-center.text-center.opacity-70.cursor-pointer id="empty-pad-#{position}"
+      .p-4
+        i.fas.fa-plus.mb-2.text-2xl
+        p.text-sm Add Sample

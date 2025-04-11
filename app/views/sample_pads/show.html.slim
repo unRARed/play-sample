@@ -1,19 +1,4 @@
 div class="pb-16"
-  .flex.items-center.justify-between.mb-6
-    .flex.items-center
-      h1.text-3xl.font-bold = @sample_pad.name
-      = link_to edit_sample_pad_path(@sample_pad), class: "ml-3 btn btn-ghost btn-sm" do
-        i.fas.fa-edit
-    .flex.items-center.space-x-2
-      = link_to root_path, class: "btn btn-ghost btn-sm" do
-        i.fas.fa-arrow-left.mr-1
-        | Home
-      = button_to stop_all_samples_path, class: "btn btn-error btn-sm" do
-        i.fas.fa-stop.mr-1
-        | Stop All
-
-  // Now Playing section moved to a fixed bottom bar
-  h2.text-2xl.font-bold.mb-4 Sample Grid
 
   / Container with max-width to prevent oversized pads on large screens
   div class="max-w-[1024px] mx-auto"
@@ -32,10 +17,10 @@ div class="pb-16"
                   i.fas.fa-plus.mb-2.text-2xl
                   p.text-sm Add Sample
     
-    / Mobile view (8 pads per page)
-    .md:hidden
+    / Mobile view with swipe interaction (8 pads per page)
+    .md:hidden data-controller="swipe" data-swipe-target="container"
       / First page (pads 0-7)
-      .grid.grid-cols-2.sm:grid-cols-4.gap-4.mb-4
+      #page-1.grid.grid-cols-2.sm:grid-cols-4.gap-4.mb-4 data-swipe-target="page" data-page="1"
         - 8.times do |index|
           - sample = @samples.find_by(position: index)
           = turbo_frame_tag "sample_pad_#{index}" do
@@ -50,7 +35,7 @@ div class="pb-16"
                     p.text-xs Add Sample
       
       / Second page (pads 8-15)
-      .grid.grid-cols-2.sm:grid-cols-4.gap-4.mb-4.hidden
+      #page-2.grid.grid-cols-2.sm:grid-cols-4.gap-4.mb-4.hidden data-swipe-target="page" data-page="2"
         - 8.times do |idx|
           - sample = @samples.find_by(position: idx + 8)
           = turbo_frame_tag "sample_pad_#{idx + 8}" do
@@ -64,15 +49,10 @@ div class="pb-16"
                     i.fas.fa-plus.mb-2.text-2xl
                     p.text-xs Add Sample
     
-    / Page indicator and navigation for mobile
-    .flex.justify-between.items-center.mt-2.mb-6
-      button.btn.btn-sm.btn-ghost type="button"
-        i.fas.fa-chevron-left.mr-1
-        | Previous
-      span#page-indicator.text-sm.text-center Page 1 of 2
-      button.btn.btn-sm.btn-ghost type="button"
-        | Next
-        i.fas.fa-chevron-right.ml-1
+    / Small dots indicator for swipe (mobile only)
+    .flex.justify-center.items-center.space-x-1.mt-2.mb-4.md:hidden
+      .w-2.h-2.rounded-full.bg-primary#dot-1 data-swipe-target="indicator" data-active="true"
+      .w-2.h-2.rounded-full.bg-gray-400#dot-2 data-swipe-target="indicator" data-active="false"
 
 / Sample edit modal for turbo frames
 #sample-edit-modal.modal
