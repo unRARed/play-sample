@@ -8,10 +8,11 @@
   
   .navbar-end
     - if user_signed_in?
-      / PANIC button - stops all audio
-      button#panic-btn.btn.btn-warning.btn-sm.mr-2 onclick="stopAllSamples()" 
-        span.font-bold.text-black PANIC
-        i.fas.fa-triangle-exclamation.ml-1.text-black
+      / PANIC button - only show on sample pad interface
+      - if controller_name == 'sample_pads' && action_name == 'show'
+        button#panic-btn.btn.btn-warning.btn-sm.mr-2 onclick="stopAllSamples()" 
+          span.font-bold.text-black PANIC
+          i.fas.fa-triangle-exclamation.ml-1.text-black
       
       .dropdown.dropdown-hover.dropdown-end
         .btn.btn-ghost.btn-circle.avatar

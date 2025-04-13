@@ -11,52 +11,44 @@
           = form.text_field :name, class: "input input-bordered w-full input-sm text-sm bg-gray-800 border-gray-700", required: true, placeholder: "#{@sample.name}"
         
         // Play mode with radio buttons only - no label
-        .grid.grid-cols-3.gap-2.mt-2
-          / Exclusive option with icon above
+        .grid.grid-cols-3.gap-1.mt-2
+          / Exclusive option with icon only
           .text-center
             .icon.mb-1
-              i.fas.fa-volume-up.text-gray-300.text-lg
-            .text-xs.text-gray-300.font-medium Exclusive
+              i.fas.fa-volume-up.text-gray-300.text-lg title="Exclusive"
             .flex.justify-center.items-center.mt-1
               = form.radio_button :play_mode, "exclusive", class: "radio radio-primary radio-sm", required: true, checked: @sample.play_mode.nil? || @sample.play_mode == "exclusive"
           
-          / Simultaneous option with icon above
+          / Simultaneous option with icon only
           .text-center
             .icon.mb-1
-              i.fas.fa-layer-group.text-gray-300.text-lg
-            .text-xs.text-gray-300.font-medium Simultaneous
+              i.fas.fa-layer-group.text-gray-300.text-lg title="Simultaneous"
             .flex.justify-center.items-center.mt-1
               = form.radio_button :play_mode, "simultaneous", class: "radio radio-primary radio-sm", required: true, checked: @sample.play_mode == "simultaneous"
           
-          / Loop option with icon above
+          / Loop option with icon only
           .text-center
             .icon.mb-1
-              i.fas.fa-sync-alt.text-gray-300.text-lg
-            .text-xs.text-gray-300.font-medium Loop
+              i.fas.fa-sync-alt.text-gray-300.text-lg title="Loop"
             .flex.justify-center.items-center.mt-1
               = form.radio_button :play_mode, "loop", class: "radio radio-primary radio-sm", required: true, checked: @sample.play_mode == "loop"
         
-        // Current audio file info - compact display
+        // Current audio file info - compact display, no option to change
         - if @sample.audio.attached?
           .text-xs.text-gray-400.mt-2.mb-1 Current audio:
           .p-2.bg-gray-800.rounded-md.flex.items-center.mb-2
             i.fas.fa-music.mr-2.text-primary
             span.text-xs.truncate = @sample.audio.filename
 
-          // Replace audio file (optional) - no label
-          = form.file_field :audio, class: "file-input file-input-bordered file-input-sm w-full text-xs bg-gray-800 border-gray-700", accept: "audio/*", direct_upload: true
-        - else
-          // Audio file (required if no existing file) - no label
-          = form.file_field :audio, class: "file-input file-input-bordered file-input-sm w-full text-xs bg-gray-800 border-gray-700", accept: "audio/*", required: true, direct_upload: true
-
-        // Buttons - smaller and styled to match new form
-        .flex.justify-between.mt-4
-          .flex.space-x-2
-            = link_to "Cancel", sample_pad_path(@sample_pad), class: "btn btn-ghost btn-sm text-sm"
+        // Buttons with single style approach - no breakpoint-specific styling
+        .mt-4
+          .flex.gap-2.mb-2
+            = link_to "Cancel", sample_pad_path(@sample_pad), class: "btn btn-ghost btn-sm flex-grow"
             = link_to "Delete", sample_pad_sample_path(@sample_pad, @sample), 
-                      class: "btn btn-error btn-sm text-sm", 
+                      class: "btn btn-error btn-sm flex-grow", 
                       data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }
-          = form.submit "Update", class: "btn btn-primary btn-sm text-sm"
+          .w-full
+            = form.submit "Update", class: "btn btn-primary btn-sm w-full"
 
 // Color selector JavaScript
 javascript:

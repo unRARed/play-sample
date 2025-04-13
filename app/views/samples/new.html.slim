@@ -13,28 +13,25 @@
         = form.hidden_field :color, value: Sample::COLORS.first
         
         // Play mode with radio buttons only - no label
-        .grid.grid-cols-3.gap-2.mt-2
-          / Exclusive option with icon above
+        .grid.grid-cols-3.gap-1.mt-2
+          / Exclusive option with icon only
           .text-center
             .icon.mb-1
-              i.fas.fa-volume-up.text-gray-300.text-lg
-            .text-xs.text-gray-300.font-medium Exclusive
+              i.fas.fa-volume-up.text-gray-300.text-lg title="Exclusive"
             .flex.justify-center.items-center.mt-1
               = form.radio_button :play_mode, "exclusive", class: "radio radio-primary radio-sm", required: true, checked: true
           
-          / Simultaneous option with icon above
+          / Simultaneous option with icon only
           .text-center
             .icon.mb-1
-              i.fas.fa-layer-group.text-gray-300.text-lg
-            .text-xs.text-gray-300.font-medium Simultaneous
+              i.fas.fa-layer-group.text-gray-300.text-lg title="Simultaneous"
             .flex.justify-center.items-center.mt-1
               = form.radio_button :play_mode, "simultaneous", class: "radio radio-primary radio-sm", required: true
           
-          / Loop option with icon above
+          / Loop option with icon only
           .text-center
             .icon.mb-1
-              i.fas.fa-sync-alt.text-gray-300.text-lg
-            .text-xs.text-gray-300.font-medium Loop
+              i.fas.fa-sync-alt.text-gray-300.text-lg title="Loop"
             .flex.justify-center.items-center.mt-1
               = form.radio_button :play_mode, "loop", class: "radio radio-primary radio-sm", required: true
         
@@ -42,10 +39,12 @@
         .form-control.mt-4
           = form.file_field :audio, class: "file-input file-input-bordered file-input-sm w-full text-xs bg-gray-800 border-gray-700", accept: "audio/*", required: true, direct_upload: true
 
-        // Buttons - smaller
-        .flex.justify-between.mt-4
-          = link_to "Cancel", sample_pad_path(@sample_pad), class: "btn btn-ghost btn-sm text-sm"
-          = form.submit "Add Sample", class: "btn btn-primary btn-sm text-sm"
+        // Buttons with single style approach - no breakpoint-specific styling
+        .mt-4
+          .mb-2
+            = link_to "Cancel", sample_pad_path(@sample_pad), class: "btn btn-ghost btn-sm w-full"
+          .w-full
+            = form.submit "Add Sample", class: "btn btn-primary btn-sm w-full"
 
 // Very minimal JavaScript for direct uploads
 javascript:
