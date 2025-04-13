@@ -1,8 +1,7 @@
 .navbar.bg-base-200
   .navbar-start
-    = link_to root_path, class: "btn btn-ghost text-xl" do
-      i.fas.fa-music.mr-2
-      | Play Sample
+    = link_to root_path, class: "btn btn-ghost" do
+      = image_tag "play-sample-logo.png", alt: "Play Sample", class: "h-10"
       
   .navbar-center
     / Center content removed
@@ -22,7 +21,8 @@
           li
             a href=edit_user_registration_path Profile
           li
-            a href=current_user.sample_pad ? sample_pad_path(current_user.sample_pad) : new_sample_pad_path My Sample Pad
+            - pad_path = current_user.sample_pad ? sample_pad_path(current_user.sample_pad) : new_sample_pad_path
+            a href=pad_path My Sample Pad
           li
             = button_to "Logout", destroy_user_session_path, method: :delete, class: "w-full text-left"
     - else

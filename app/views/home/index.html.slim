@@ -1,32 +1,15 @@
 .hero.bg-base-300.rounded-lg.p-8.mb-8
   .hero-content.flex-col.lg:flex-row
     .max-w-md.prose
-      h1.text-5xl.font-bold Play Sample
+      = image_tag "play-sample-logo.png", alt: "Play Sample", class: "mb-4 max-w-xs"
       p.py-6 Create, organize, and play audio samples with customizable pads. Upload your audio files and trigger them with a simple click, just like the Akai MPX8.
       - if user_signed_in?
         = link_to "View My Sample Pad", current_user.sample_pad ? sample_pad_path(current_user.sample_pad) : new_sample_pad_path, class: "btn btn-primary"
       - else
         = link_to "Get Started", new_user_registration_path, class: "btn btn-primary"
-    img.max-w-sm.rounded-lg.shadow-2xl alt="Play Sample" src="/assets/sample-player.png" /
 
-- if user_signed_in?
-  .my-8
-    h2.text-2xl.font-bold.mb-4 Your Sample Pad
-    - if @sample_pad.present?
-      .card.bg-base-200.hover:bg-base-300.transition-colors.duration-200.shadow-xl
-        .card-body
-          h3.card-title = @sample_pad.name
-          p #{@sample_pad.samples.count} samples
-          .card-actions.justify-end
-            span.text-sm.opacity-75 Last updated: #{time_ago_in_words(@sample_pad.updated_at)} ago
-          .card-actions.justify-end.mt-4
-            = link_to "Open Sample Pad", sample_pad_path(@sample_pad), class: "btn btn-primary"
-    - else
-      .card.bg-base-200.shadow-xl
-        .card-body
-          h3.card-title You don't have a sample pad yet!
-          p.mb-4 Create your sample pad to start organizing and playing your audio samples.
-          = link_to "Create Sample Pad", new_sample_pad_path, class: "btn btn-primary"
+
+
 
 .grid.grid-cols-1.md:grid-cols-3.gap-6.my-8
   .card.bg-base-200.shadow-xl
