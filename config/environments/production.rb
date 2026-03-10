@@ -6,6 +6,9 @@ Rails.application.configure do
   # Code is not reloaded between requests.
   config.enable_reloading = false
 
+  # Requires a master key to decrypt credentials and other encrypted files.
+  config.require_master_key = false # docker doesn't like this required
+
   # Eager load code on boot for better performance and memory savings (ignored by Rake tasks).
   config.eager_load = true
 
@@ -56,8 +59,8 @@ Rails.application.configure do
   # Only use :id for inspections in production.
   config.active_record.attributes_for_inspect = [ :id ]
 
-  # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :local
+  # Store uploaded files on S3-compatible object storage (see config/storage.yml).
+  config.active_storage.service = :amazon
 
   # Configure Active Storage URL generation
   config.active_storage.resolve_model_to_route = :rails_storage_redirect

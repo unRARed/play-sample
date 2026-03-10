@@ -7,9 +7,19 @@
 /* Custom styles */
 .sample-pad {
   aspect-ratio: 1/1;
-  @apply flex items-center justify-center text-center p-2 rounded-md text-white font-bold shadow-md transition-all;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 0.375rem;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  transition: all 150ms ease;
+  padding: 0.5rem;
 }
 
 .sample-pad:active {
-  @apply transform scale-95 opacity-80;
+  transform: scale(0.95);
+  opacity: 0.8;
 }

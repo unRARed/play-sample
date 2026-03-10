@@ -8,7 +8,32 @@ fi
 
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
+  if [ -x /usr/local/bin/litestream ]; then
+    if [ -z "${LITESTREAM_ACCESS_KEY_ID}" ]; then
+      LITESTREAM_ACCESS_KEY_ID=$(./bin/rails runner 'print Rails.application.credentials.dig(:aws, :access_key_id).to_s')
+      export LITESTREAM_ACCESS_KEY_ID
+    fi
+
+    if [ -z "${LITESTREAM_SECRET_ACCESS_KEY}" ]; then
+      LITESTREAM_SECRET_ACCESS_KEY=$(./bin/rails runner 'print Rails.application.credentials.dig(:aws, :secret_access_key).to_s')
+      export LITESTREAM_SECRET_ACCESS_KEY
+    fi
+
+    if [ -z "${LITESTREAM_ACCESS_KEY_ID}" ] || [ -z "${LITESTREAM_SECRET_ACCESS_KEY}" ]; then
+      echo "Missing aws.access_key_id or aws.secret_access_key in Rails credentials for Litestream." >&2
+      exit 1
+    fi
+
+    /usr/local/bin/litestream restore -if-replica-exists -if-db-not-exists -config /rails/config/litestream.yml /rails/storage/play_sample_production.sqlite3
+    /usr/local/bin/litestream restore -if-replica-exists -if-db-not-exists -config /rails/config/litestream.yml /rails/storage/play_sample_production_cache.sqlite3
+    /usr/local/bin/litestream restore -if-replica-exists -if-db-not-exists -config /rails/config/litestream.yml /rails/storage/play_sample_production_queue.sqlite3
+  fi
+
   ./bin/rails db:prepare
+
+  if [ -x /usr/local/bin/litestream ]; then
+    exec /usr/local/bin/litestream replicate -config /rails/config/litestream.yml -exec "./bin/rails server"
+  fi
 fi
 
 exec "${@}"

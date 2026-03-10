@@ -1,0 +1,33 @@
+dbs:
+  - path: /rails/storage/play_sample_production.sqlite3
+    replicas:
+      - type: s3
+        bucket: ${BUCKET_NAME}
+        path: litestream/play_sample_production.sqlite3
+        region: ${AWS_REGION}
+        endpoint: ${AWS_ENDPOINT_URL_S3}
+        access-key-id: ${LITESTREAM_ACCESS_KEY_ID}
+        secret-access-key: ${LITESTREAM_SECRET_ACCESS_KEY}
+        force-path-style: true
+
+  - path: /rails/storage/play_sample_production_cache.sqlite3
+    replicas:
+      - type: s3
+        bucket: ${BUCKET_NAME}
+        path: litestream/play_sample_production_cache.sqlite3
+        region: ${AWS_REGION}
+        endpoint: ${AWS_ENDPOINT_URL_S3}
+        access-key-id: ${LITESTREAM_ACCESS_KEY_ID}
+        secret-access-key: ${LITESTREAM_SECRET_ACCESS_KEY}
+        force-path-style: true
+
+  - path: /rails/storage/play_sample_production_queue.sqlite3
+    replicas:
+      - type: s3
+        bucket: ${BUCKET_NAME}
+        path: litestream/play_sample_production_queue.sqlite3
+        region: ${AWS_REGION}
+        endpoint: ${AWS_ENDPOINT_URL_S3}
+        access-key-id: ${LITESTREAM_ACCESS_KEY_ID}
+        secret-access-key: ${LITESTREAM_SECRET_ACCESS_KEY}
+        force-path-style: true

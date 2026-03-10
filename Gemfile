@@ -59,3 +59,7 @@ group :test do
   gem "shoulda-matchers"
   gem "database_cleaner-active_record"
 end
+
+gem "dockerfile-rails", ">= 1.7", group: :development
+
+gem "aws-sdk-s3", "~> 1.215"
