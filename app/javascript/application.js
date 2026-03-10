@@ -41,6 +41,25 @@ window.lastSampleTrigger = { href: null, at: 0 };
 const AudioContextClass = window.AudioContext || window.webkitAudioContext;
 window.sampleAudioContext = AudioContextClass ? new AudioContextClass({ latencyHint: "interactive" }) : null;
 
+function isIOSWebKit() {
+  const ua = navigator.userAgent || "";
+  return /iPad|iPhone|iPod/.test(ua);
+}
+
+function primeAudioContextInGesture() {
+  if (!window.sampleAudioContext) return;
+
+  if (window.sampleAudioContext.state !== "running") {
+    window.sampleAudioContext.resume();
+  }
+
+  const source = window.sampleAudioContext.createBufferSource();
+  const buffer = window.sampleAudioContext.createBuffer(1, 1, 22050);
+  source.buffer = buffer;
+  source.connect(window.sampleAudioContext.destination);
+  source.start(0);
+}
+
 function getVisiblePlayLinks() {
   const visiblePage = document.querySelector('[data-swipe-target="page"]:not(.hidden)');
   if (visiblePage) {
@@ -166,6 +185,26 @@ function playSample(data) {
     stopAllAudio();
   }
 
+  const playWithHtmlAudio = () => {
+    let audio = window.sampleAudioCache[data.id];
+    if (!audio) {
+      audio = new Audio(data.audio_url);
+      audio.dataset.sampleId = data.id;
+      audio.preload = "auto";
+      window.sampleAudioCache[data.id] = audio;
+    }
+
+    audio.loop = data.play_mode === "loop";
+    audio.currentTime = 0;
+    audio.play().catch((error) => {
+      console.error("HTML audio play failed:", error);
+    });
+
+    if (!window.activeAudioElements.includes(audio)) {
+      window.activeAudioElements.push(audio);
+    }
+  };
+
   const playFromBuffer = () => {
     if (!window.sampleAudioBuffers[data.id] || !window.sampleAudioContext) return false;
 
@@ -197,24 +236,12 @@ function playSample(data) {
     // If unlocked but this sample isn't decoded yet, load it on-demand and then play.
     if (window.sampleAudioUnlocked) {
       preloadSampleBuffer(data.id, data.audio_url).then(() => {
-        playFromBuffer();
+        if (!playFromBuffer()) {
+          playWithHtmlAudio();
+        }
       });
     } else {
-      let audio = window.sampleAudioCache[data.id];
-      if (!audio) {
-        audio = new Audio(data.audio_url);
-        audio.dataset.sampleId = data.id;
-        audio.preload = "auto";
-        window.sampleAudioCache[data.id] = audio;
-      }
-
-      audio.loop = data.play_mode === "loop";
-      audio.currentTime = 0;
-      audio.play();
-
-      if (!window.activeAudioElements.includes(audio)) {
-        window.activeAudioElements.push(audio);
-      }
+      playWithHtmlAudio();
     }
   }
 
@@ -242,7 +269,8 @@ function handleSampleTrigger(event) {
   if (!playLink || !playLink.href) return;
 
   if (event.type === "pointerdown" && event.pointerType === "mouse" && event.button !== 0) return;
-  if (event.type === "touchstart" && event.touches && event.touches.length > 1) return;
+  if (event.type === "touchend" && event.changedTouches && event.changedTouches.length > 1) return;
+  if (event.type === "pointerdown" && event.pointerType === "touch" && isIOSWebKit()) return;
 
   const now = Date.now();
   if (event.type === "click" && window.lastSampleTrigger.href === playLink.href && now - window.lastSampleTrigger.at < 500) {
@@ -252,6 +280,10 @@ function handleSampleTrigger(event) {
 
   event.preventDefault();
   window.lastSampleTrigger = { href: playLink.href, at: now };
+
+  if (isIOSWebKit() && event.type === "touchend") {
+    primeAudioContextInGesture();
+  }
 
   if (!window.sampleAudioUnlocked) {
     const ctaButton = document.getElementById("enable-audio-playback");
@@ -422,7 +454,7 @@ document.addEventListener("turbo:load", initSwipeNavigation);
 document.addEventListener("DOMContentLoaded", initSwipeNavigation);
 document.addEventListener("turbo:load", initAudioUnlockUI);
 document.addEventListener("DOMContentLoaded", initAudioUnlockUI);
-document.addEventListener("touchstart", handleSampleTrigger, { passive: false });
+document.addEventListener("touchend", handleSampleTrigger, { passive: false });
 document.addEventListener("pointerdown", handleSampleTrigger);
 document.addEventListener("click", handleSampleTrigger);
 document.addEventListener("click", (event) => {

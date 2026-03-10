@@ -24,9 +24,9 @@ div class="pb-16"
                   p.text-sm Add Sample
     
     / Mobile view with swipe interaction (8 pads per page)
-    .md:hidden.px-2 data-controller="swipe" data-swipe-target="container"
+    .md:hidden data-controller="swipe" data-swipe-target="container"
       / First page (pads 0-7)
-      #page-1.grid.grid-cols-2.gap-2.mb-3.max-w-sm.mx-auto data-swipe-target="page" data-page="1"
+      #page-1.grid.grid-cols-2.mb-3.mx-auto data-swipe-target="page" data-page="1"
         - 8.times do |index|
           - sample = @samples.find_by(position: index)
           = turbo_frame_tag "sample_pad_#{index}" do
@@ -41,7 +41,7 @@ div class="pb-16"
                     p.text-xs Add Sample
       
       / Second page (pads 8-15)
-      #page-2.grid.grid-cols-2.gap-2.mb-3.max-w-sm.mx-auto.hidden data-swipe-target="page" data-page="2"
+      #page-2.grid.grid-cols-2.mb-3.mx-auto.hidden data-swipe-target="page" data-page="2"
         - 8.times do |idx|
           - sample = @samples.find_by(position: idx + 8)
           = turbo_frame_tag "sample_pad_#{idx + 8}" do
