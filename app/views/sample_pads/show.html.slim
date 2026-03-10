@@ -26,7 +26,7 @@ div class="pb-16"
     / Mobile view with swipe interaction (8 pads per page)
     .md:hidden data-controller="swipe" data-swipe-target="container"
       / First page (pads 0-7)
-      #page-1.grid.grid-cols-2.mb-3.mx-auto data-swipe-target="page" data-page="1"
+      #page-1.grid.grid-cols-2.gap-3.mb-3.mx-auto data-swipe-target="page" data-page="1"
         - 8.times do |index|
           - sample = @samples.find_by(position: index)
           = turbo_frame_tag "sample_pad_#{index}" do
@@ -41,7 +41,7 @@ div class="pb-16"
                     p.text-xs Add Sample
       
       / Second page (pads 8-15)
-      #page-2.grid.grid-cols-2.mb-3.mx-auto.hidden data-swipe-target="page" data-page="2"
+      #page-2.grid.grid-cols-2.gap-3.mb-3.mx-auto.hidden data-swipe-target="page" data-page="2"
         - 8.times do |idx|
           - sample = @samples.find_by(position: idx + 8)
           = turbo_frame_tag "sample_pad_#{idx + 8}" do
@@ -71,3 +71,5 @@ div class="pb-16"
       .text-sm
         p.font-bold No sample playing
         p.text-xs Select a sample to play
+
+#audio-preload-status.fixed.right-3.hidden.rounded-md.bg-base-300.px-3.py-2.text-xs.shadow-lg style="bottom: 5.5rem; z-index: 60;"

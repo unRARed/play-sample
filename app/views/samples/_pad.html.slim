@@ -1,7 +1,7 @@
 = turbo_frame_tag "sample_pad_#{sample.position}" do
   .sample-pad.aspect-square.w-full.rounded-lg.shadow-md.relative class="bg-#{sample.color}-500 hover:bg-#{sample.color}-600" data-sample-id=sample.id
     // Main pad content that plays the sample when clicked with padding for edit buttons
-    = link_to play_sample_pad_sample_path(pad, sample), style: "position: absolute; top: 32px; left: 0; right: 0; bottom: 32px; z-index: 10;", data: { turbo_method: :post, sample_id: sample.id, sample_name: sample.name, sample_color: sample.color, sample_play_mode: sample.play_mode, sample_audio_url: rails_blob_path(sample.audio, disposition: "inline") } do
+    = link_to play_sample_pad_sample_path(pad, sample), class: "sample-play-hit-area", style: "position: absolute; top: 52px; left: 0; right: 0; bottom: 52px; z-index: 5;", data: { turbo_method: :post, sample_id: sample.id, sample_name: sample.name, sample_color: sample.color, sample_play_mode: sample.play_mode, sample_audio_url: rails_blob_path(sample.audio, disposition: "inline") } do
       span.sr-only Play #{sample.name}
       
     // Sample information - only show the name
@@ -10,10 +10,10 @@
       
     // Clean, simple edit color button in corner
     .absolute.top-0.right-0.z-50
-      = link_to edit_color_sample_pad_sample_path(pad, sample), style: "display: block; width: 32px; height: 32px; background-color: rgba(0,0,0,0.4); border-radius: 0 0 0 8px; display: flex; align-items: center; justify-content: center;", title: "Edit color", data: { turbo_frame: "modal" }
+      = link_to edit_color_sample_pad_sample_path(pad, sample), class: "sample-control", style: "position: relative; z-index: 80; display: block; width: 40px; height: 40px; background-color: rgba(0,0,0,0.4); border-radius: 0 0 0 8px; display: flex; align-items: center; justify-content: center;", title: "Edit color", data: { turbo_frame: "modal" }
         i.fas.fa-palette.text-white.text-xs
 
     // Edit button - consistent across all breakpoints
     .absolute.bottom-2.left-2.z-50
-      = link_to edit_sample_pad_sample_path(pad, sample), style: "display: block; width: 32px; height: 32px; background-color: rgba(0,0,0,0.4); border-radius: 4px; display: flex; align-items: center; justify-content: center;", data: { turbo_frame: "sample_pad_#{sample.position}" }
+      = link_to edit_sample_pad_sample_path(pad, sample), class: "sample-control", style: "position: relative; z-index: 80; display: block; width: 40px; height: 40px; background-color: rgba(0,0,0,0.4); border-radius: 4px; display: flex; align-items: center; justify-content: center;", data: { turbo_frame: "modal" }
         i.fas.fa-pencil.text-white.text-xs

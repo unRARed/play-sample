@@ -38,6 +38,7 @@ window.sampleAudioReady = false;
 window.sampleAudioCacheName = "play-sample-audio-v1";
 window.lastSampleTrigger = { href: null, at: 0 };
 window.sampleAudioMode = isIOSWebKit() ? "html" : "buffer";
+window.sampleAudioObjectUrls = {};
 
 const AudioContextClass = window.AudioContext || window.webkitAudioContext;
 window.sampleAudioContext = AudioContextClass ? new AudioContextClass({ latencyHint: "interactive" }) : null;
@@ -74,19 +75,18 @@ function getAllPlayLinks() {
   return Array.from(document.querySelectorAll('a[href*="/play"][data-sample-audio-url]'));
 }
 
-function preloadHtmlAudioElements() {
-  const links = getAllPlayLinks();
-  links.forEach((link) => {
-    const sampleId = link.dataset.sampleId;
-    const audioUrl = link.dataset.sampleAudioUrl;
-    if (!sampleId || !audioUrl || window.sampleAudioCache[sampleId]) return;
+function setAudioPreloadStatus(message, done = false) {
+  const status = document.getElementById("audio-preload-status");
+  if (!status) return;
 
-    const audio = new Audio(audioUrl);
-    audio.dataset.sampleId = sampleId;
-    audio.preload = "auto";
-    audio.load();
-    window.sampleAudioCache[sampleId] = audio;
-  });
+  status.textContent = message;
+  status.classList.remove("hidden");
+
+  if (done) {
+    setTimeout(() => {
+      status.classList.add("hidden");
+    }, 1500);
+  }
 }
 
 async function fetchAudioArrayBuffer(audioUrl) {
@@ -106,6 +106,58 @@ async function fetchAudioArrayBuffer(audioUrl) {
   const response = await fetch(audioUrl);
   if (!response.ok) throw new Error(`Failed to fetch audio: ${response.status}`);
   return response.arrayBuffer();
+}
+
+async function fetchAudioBlob(audioUrl) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+  if (window.caches) {
+    const cache = await caches.open(window.sampleAudioCacheName);
+    const cachedResponse = await cache.match(audioUrl);
+    if (cachedResponse) {
+      clearTimeout(timeoutId);
+      return cachedResponse.blob();
+    }
+
+    const networkResponse = await fetch(audioUrl, { cache: "no-cache", signal: controller.signal });
+    if (!networkResponse.ok) throw new Error(`Failed to fetch audio: ${networkResponse.status}`);
+    await cache.put(audioUrl, networkResponse.clone());
+    clearTimeout(timeoutId);
+    return networkResponse.blob();
+  }
+
+  const response = await fetch(audioUrl, { signal: controller.signal });
+  if (!response.ok) throw new Error(`Failed to fetch audio: ${response.status}`);
+  clearTimeout(timeoutId);
+  return response.blob();
+}
+
+function preloadHtmlAudioElements(onProgress, links = getAllPlayLinks()) {
+  let loaded = 0;
+
+  return Promise.allSettled(
+    links.map((link) =>
+      (async () => {
+        const sampleId = link.dataset.sampleId;
+        const audioUrl = link.dataset.sampleAudioUrl;
+        if (!sampleId || !audioUrl || window.sampleAudioCache[sampleId]) return;
+
+        const blob = await fetchAudioBlob(audioUrl);
+        const objectUrl = URL.createObjectURL(blob);
+        window.sampleAudioObjectUrls[sampleId] = objectUrl;
+
+        const audio = new Audio(objectUrl);
+        audio.dataset.sampleId = sampleId;
+        audio.preload = "auto";
+        audio.load();
+        window.sampleAudioCache[sampleId] = audio;
+      })().finally(() => {
+        loaded += 1;
+        if (onProgress) onProgress(loaded, links.length);
+      })
+    )
+  );
 }
 
 function preloadSampleBuffer(sampleId, audioUrl) {
@@ -152,11 +204,36 @@ function preloadAllSamples(onProgress) {
 async function unlockSampleAudio() {
   const unlockButton = document.getElementById("enable-audio-playback");
   if (window.sampleAudioMode === "html") {
-    window.sampleAudioUnlocked = true;
-    preloadHtmlAudioElements();
-    window.sampleAudioReady = true;
-    const cta = document.getElementById("audio-unlock-cta");
-    if (cta) cta.classList.add("hidden");
+    try {
+      if (unlockButton) {
+        unlockButton.disabled = true;
+        unlockButton.textContent = "Enabled";
+      }
+
+      window.sampleAudioUnlocked = true;
+      window.sampleAudioReady = true;
+      const cta = document.getElementById("audio-unlock-cta");
+      if (cta) cta.classList.add("hidden");
+
+      // Warm cache/audio elements in background without blocking interaction.
+      const remainingLinks = getAllPlayLinks().filter((link) => !window.sampleAudioCache[link.dataset.sampleId]);
+      if (remainingLinks.length > 0) {
+        setAudioPreloadStatus(`Caching audio 0/${remainingLinks.length}`);
+        preloadHtmlAudioElements((loaded, total) => {
+          setAudioPreloadStatus(`Caching audio ${loaded}/${total}`);
+        }, remainingLinks).then(() => {
+          setAudioPreloadStatus("Audio cache ready", true);
+        });
+      } else {
+        setAudioPreloadStatus("Audio cache ready", true);
+      }
+    } catch (error) {
+      console.error("Error enabling HTML audio mode:", error);
+      if (unlockButton) {
+        unlockButton.disabled = false;
+        unlockButton.textContent = "Enable instant audio";
+      }
+    }
     return;
   }
 
@@ -191,6 +268,19 @@ async function unlockSampleAudio() {
 function initAudioUnlockUI() {
   const cta = document.getElementById("audio-unlock-cta");
   if (!cta) return;
+  const unlockButton = document.getElementById("enable-audio-playback");
+
+  if (unlockButton && unlockButton.dataset.unlockBound !== "true") {
+    const onUnlockTap = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      unlockSampleAudio();
+    };
+
+    unlockButton.addEventListener("touchend", onUnlockTap, { passive: false });
+    unlockButton.addEventListener("click", onUnlockTap);
+    unlockButton.dataset.unlockBound = "true";
+  }
 
   const hasPlayableSamples = getAllPlayLinks().length > 0;
   if (!hasPlayableSamples) {
@@ -291,8 +381,10 @@ function playSample(data) {
 }
 
 function handleSampleTrigger(event) {
-  // Get the play link if it was clicked (or a child of it was clicked)
-  const playLink = event.target.closest('a[href*="/play"]');
+  if (event.target.closest(".sample-control")) return;
+
+  // Only handle taps on the dedicated play hit area.
+  const playLink = event.target.closest("a.sample-play-hit-area");
   if (!playLink || !playLink.href) return;
 
   if (event.type === "pointerdown" && event.pointerType === "mouse" && event.button !== 0) return;
@@ -484,9 +576,3 @@ document.addEventListener("DOMContentLoaded", initAudioUnlockUI);
 document.addEventListener("touchend", handleSampleTrigger, { passive: false });
 document.addEventListener("pointerdown", handleSampleTrigger);
 document.addEventListener("click", handleSampleTrigger);
-document.addEventListener("click", (event) => {
-  const unlockButton = event.target.closest("#enable-audio-playback");
-  if (unlockButton) {
-    unlockSampleAudio();
-  }
-});

@@ -29,7 +29,11 @@ class SamplesController < ApplicationController
   # GET /sample_pads/:sample_pad_id/samples/:id/edit
   def edit
     # Set sample is already called in the before_action
-    render :edit
+    if turbo_frame_request? && request.headers["Turbo-Frame"] == "modal"
+      render :edit_modal
+    else
+      render :edit
+    end
   end
 
   # GET /sample_pads/:sample_pad_id/samples/:id/edit_color
@@ -105,7 +109,11 @@ class SamplesController < ApplicationController
         format.html { redirect_to sample_pad_path(@sample_pad), status: :unprocessable_entity, alert: @sample.errors.full_messages.join(", ") }
         format.turbo_stream do
           flash.now[:alert] = @sample.errors.full_messages.join(", ")
-          render :edit, status: :unprocessable_entity
+          if request.headers["Turbo-Frame"] == "modal"
+            render :edit_modal, status: :unprocessable_entity
+          else
+            render :edit, status: :unprocessable_entity
+          end
         end
       end
     end
