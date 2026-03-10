@@ -37,6 +37,7 @@ window.sampleAudioUnlocked = false;
 window.sampleAudioReady = false;
 window.sampleAudioCacheName = "play-sample-audio-v1";
 window.lastSampleTrigger = { href: null, at: 0 };
+window.sampleAudioMode = isIOSWebKit() ? "html" : "buffer";
 
 const AudioContextClass = window.AudioContext || window.webkitAudioContext;
 window.sampleAudioContext = AudioContextClass ? new AudioContextClass({ latencyHint: "interactive" }) : null;
@@ -71,6 +72,21 @@ function getVisiblePlayLinks() {
 
 function getAllPlayLinks() {
   return Array.from(document.querySelectorAll('a[href*="/play"][data-sample-audio-url]'));
+}
+
+function preloadHtmlAudioElements() {
+  const links = getAllPlayLinks();
+  links.forEach((link) => {
+    const sampleId = link.dataset.sampleId;
+    const audioUrl = link.dataset.sampleAudioUrl;
+    if (!sampleId || !audioUrl || window.sampleAudioCache[sampleId]) return;
+
+    const audio = new Audio(audioUrl);
+    audio.dataset.sampleId = sampleId;
+    audio.preload = "auto";
+    audio.load();
+    window.sampleAudioCache[sampleId] = audio;
+  });
 }
 
 async function fetchAudioArrayBuffer(audioUrl) {
@@ -123,7 +139,7 @@ function preloadAllSamples(onProgress) {
   const links = getAllPlayLinks();
   let loaded = 0;
 
-  return Promise.all(
+  return Promise.allSettled(
     links.map((link) =>
       preloadSampleBuffer(link.dataset.sampleId, link.dataset.sampleAudioUrl).finally(() => {
         loaded += 1;
@@ -135,6 +151,15 @@ function preloadAllSamples(onProgress) {
 
 async function unlockSampleAudio() {
   const unlockButton = document.getElementById("enable-audio-playback");
+  if (window.sampleAudioMode === "html") {
+    window.sampleAudioUnlocked = true;
+    preloadHtmlAudioElements();
+    window.sampleAudioReady = true;
+    const cta = document.getElementById("audio-unlock-cta");
+    if (cta) cta.classList.add("hidden");
+    return;
+  }
+
   if (!window.sampleAudioContext) return;
 
   try {
@@ -230,7 +255,9 @@ function playSample(data) {
     return true;
   };
 
-  if (window.sampleAudioUnlocked && playFromBuffer()) {
+  if (window.sampleAudioMode === "html") {
+    playWithHtmlAudio();
+  } else if (window.sampleAudioUnlocked && playFromBuffer()) {
     // played from preloaded, decoded buffer
   } else {
     // If unlocked but this sample isn't decoded yet, load it on-demand and then play.
@@ -281,7 +308,7 @@ function handleSampleTrigger(event) {
   event.preventDefault();
   window.lastSampleTrigger = { href: playLink.href, at: now };
 
-  if (isIOSWebKit() && event.type === "touchend") {
+  if (window.sampleAudioMode === "buffer" && isIOSWebKit() && event.type === "touchend") {
     primeAudioContextInGesture();
   }
 
@@ -294,7 +321,7 @@ function handleSampleTrigger(event) {
     return;
   }
 
-  if (window.sampleAudioContext && window.sampleAudioContext.state !== "running") {
+  if (window.sampleAudioMode === "buffer" && window.sampleAudioContext && window.sampleAudioContext.state !== "running") {
     window.sampleAudioContext.resume();
   }
 
