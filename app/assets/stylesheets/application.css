@@ -33,6 +33,12 @@
   --error: #f87272;
 }
 
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 /* Custom component styles */
 .sample-pad {
   aspect-ratio: 1/1;
@@ -47,8 +53,15 @@
   transition: all 0.2s;
 }
 
-.sample-pad:hover {
-  transform: scale(1.05);
+.sample-pad,
+.sample-pad a {
+  touch-action: manipulation;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sample-pad:hover {
+    transform: scale(1.05);
+  }
 }
 
 .now-playing-container {

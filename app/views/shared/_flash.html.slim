@@ -1,6 +1,6 @@
 - flash.each do |type, message|
   - alert_class = type == "notice" ? "alert-success" : "alert-error"
-  div class="alert #{alert_class} mb-4 flex justify-between items-center" id="flash" data-controller="flash"
-    div
+  div class="alert #{alert_class} mb-4 flex items-start gap-2" id="flash" data-controller="flash"
+    div.min-w-0.break-words.flex-1
       = message
-    button.btn.btn-sm.btn-ghost data-action="click->flash#dismiss" &times;
+    button.btn.btn-sm.btn-ghost.flex-shrink-0 data-action="click->flash#dismiss" &times;

@@ -1,7 +1,7 @@
 = turbo_frame_tag "sample_pad_#{sample.position}" do
   .sample-pad.aspect-square.w-full.rounded-lg.shadow-md.relative class="bg-#{sample.color}-500 hover:bg-#{sample.color}-600" data-sample-id=sample.id
     // Main pad content that plays the sample when clicked with padding for edit buttons
-    = link_to play_sample_pad_sample_path(pad, sample), style: "position: absolute; top: 32px; left: 0; right: 0; bottom: 32px; z-index: 10;", data: { turbo_method: :post } do
+    = link_to play_sample_pad_sample_path(pad, sample), style: "position: absolute; top: 32px; left: 0; right: 0; bottom: 32px; z-index: 10;", data: { turbo_method: :post, sample_id: sample.id, sample_name: sample.name, sample_color: sample.color, sample_play_mode: sample.play_mode, sample_audio_url: rails_blob_path(sample.audio, disposition: "attachment") } do
       span.sr-only Play #{sample.name}
       
     // Sample information - only show the name
